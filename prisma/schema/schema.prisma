@@ -1,0 +1,10 @@
+generator client {
+  provider        = "prisma-client-js"
+  output          = "../generated/prisma"
+  previewFeatures = ["prismaSchemaFolder", "driverAdapters"]
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DB_URL")
+}
