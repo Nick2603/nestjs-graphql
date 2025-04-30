@@ -1,7 +1,6 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { PrismaService } from 'src/infrastructure/prisma/prisma.service';
-import type { User } from '@prisma/client';
-import type { GetUserArgs } from './dto/get-user.args';
+import type { User } from 'prisma/generated/prisma';
 
 @Injectable()
 export class UserQueryRepository {
@@ -14,7 +13,7 @@ export class UserQueryRepository {
   /**
    * Throws NotFoundException if user is not found.
    */
-  async getUser({ id }: GetUserArgs): Promise<User> {
+  async getUser(id: string): Promise<User> {
     const user = await this.prisma.user.findUnique({
       where: {
         id,

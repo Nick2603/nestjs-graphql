@@ -2,6 +2,10 @@
 # THIS FILE WAS AUTOMATICALLY GENERATED (DO NOT MODIFY)
 # ------------------------------------------------------
 
+input CreateProfileInput {
+  name: String!
+}
+
 input CreateUserInput {
   email: String!
   password: String!
@@ -13,14 +17,31 @@ A date-time string at UTC, such as 2019-12-03T09:54:33Z, compliant with the date
 scalar DateTime
 
 type Mutation {
+  createProfile(data: CreateProfileInput!, userId: String!): Profile!
   createUser(data: CreateUserInput!): User!
-  deleteUser(id: ID!): User!
+  deleteUser(id: String!): User!
+  updateProfile(data: UpdateProfileInput!, userId: String!): Profile!
   updateUser(data: UpdateUserInput!, id: String!): User!
 }
 
+type Profile {
+  createdAt: DateTime!
+  id: ID!
+  name: String!
+  updatedAt: DateTime!
+  user: User!
+  userId: String!
+}
+
 type Query {
-  getUser(id: ID!): User!
+  getProfile(userId: String!): Profile!
+  getProfiles: [Profile!]!
+  getUser(id: String!): User!
   getUsers: [User!]!
+}
+
+input UpdateProfileInput {
+  name: String
 }
 
 input UpdateUserInput {
@@ -33,5 +54,7 @@ type User {
   email: String!
   id: ID!
   password: String!
+  profile: Profile
+  profileId: String
   updatedAt: DateTime!
 }

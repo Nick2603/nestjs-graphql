@@ -1,6 +1,6 @@
 import { IsEmail, IsOptional, IsString, Length } from 'class-validator';
 import { InputType, Field } from '@nestjs/graphql';
-import type { User } from '@prisma/client';
+import type { User } from 'prisma/generated/prisma';
 
 @InputType()
 export class UpdateUserInput

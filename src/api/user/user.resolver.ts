@@ -1,14 +1,24 @@
-import { Args, Mutation, Query, Resolver } from '@nestjs/graphql';
+import {
+  Args,
+  Mutation,
+  Parent,
+  Query,
+  ResolveField,
+  Resolver,
+} from '@nestjs/graphql';
 import { UserService } from './user.service';
 import { User } from './models/user.model';
-import { GetUserArgs } from './dto/get-user.args';
 import { CreateUserInput } from './dto/create-user.input';
 import { UpdateUserInput } from './dto/update-user.input';
-import { DeleteUserArgs } from './dto/delete-user.args';
+import { ProfileDataLoader } from 'src/infrastructure/data-loader/profile.data-loader';
+import { Profile } from '../profile/models/profile.model';
 
 @Resolver(() => User)
 export class UserResolver {
-  constructor(private readonly userService: UserService) {}
+  constructor(
+    private readonly userService: UserService,
+    private readonly profileDataLoader: ProfileDataLoader,
+  ) {}
 
   @Query(() => [User])
   async getUsers() {
@@ -16,8 +26,8 @@ export class UserResolver {
   }
 
   @Query(() => User)
-  async getUser(@Args() args: GetUserArgs) {
-    return this.userService.getUser(args);
+  async getUser(@Args('id') id: string) {
+    return this.userService.getUser(id);
   }
 
   @Mutation(() => User)
@@ -34,7 +44,14 @@ export class UserResolver {
   }
 
   @Mutation(() => User)
-  async deleteUser(@Args() args: DeleteUserArgs) {
-    return this.userService.deleteUser(args);
+  async deleteUser(@Args('id') id: string) {
+    return this.userService.deleteUser(id);
+  }
+
+  @ResolveField('profile', () => Profile, { nullable: true })
+  async user(@Parent() { profileId }: User) {
+    return profileId
+      ? await this.profileDataLoader.createLoader().load(profileId)
+      : null;
   }
 }

@@ -13,7 +13,10 @@ export class GqlConfigService implements GqlOptionsFactory {
       sortSchema: true,
       playground: false,
       plugins: [ApolloServerPluginLandingPageLocalDefault()],
-      context: ({ req, res }: GraphQLContext): GraphQLContext => ({ req, res }),
+      context: ({ req, res }: GraphQLContext): GraphQLContext => ({
+        req,
+        res,
+      }),
     };
   }
 }

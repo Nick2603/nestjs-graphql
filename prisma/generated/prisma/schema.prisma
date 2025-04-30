@@ -1,7 +1,21 @@
+model Profile {
+  id String @id @default(uuid())
+
+  name String
+
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId String @unique @map("user_id")
+
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  @@map("profiles")
+}
+
 generator client {
   provider        = "prisma-client-js"
   output          = "../generated/prisma"
-  previewFeatures = ["prismaSchemaFolder", "driverAdapters"]
+  previewFeatures = ["driverAdapters"]
 }
 
 datasource db {
@@ -15,8 +29,11 @@ model User {
   password String
   email    String @unique
 
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  profile   Profile?
+  profileId String?  @unique @map("profile_id")
+
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
 
   @@map("users")
 }
