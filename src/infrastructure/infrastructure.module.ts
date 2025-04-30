@@ -5,6 +5,7 @@ import { GraphQLModule } from '@nestjs/graphql';
 import { graphqlSetUp } from './graphql/graphql.set-up';
 import { ApolloDriverConfig } from '@nestjs/apollo';
 import { DataLoaderModule } from './data-loader/data-loader.module';
+import { SeedersModule } from './seeders/seeders.module';
 
 @Module({
   imports: [
@@ -12,6 +13,7 @@ import { DataLoaderModule } from './data-loader/data-loader.module';
     PrismaModule,
     GraphQLModule.forRootAsync<ApolloDriverConfig>(graphqlSetUp),
     DataLoaderModule,
+    SeedersModule,
   ],
 })
 export class InfrastructureModule {}

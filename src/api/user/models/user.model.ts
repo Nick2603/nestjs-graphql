@@ -16,4 +16,10 @@ export class User extends DbEntity implements PrismaUser {
 
   @Field(() => Profile, { nullable: true })
   profile: Profile | null;
+
+  @Field(() => String, { nullable: true })
+  roleIds: string[];
+
+  @Field(() => Profile, { nullable: true })
+  roles: Profile | null;
 }

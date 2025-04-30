@@ -128,11 +128,20 @@ exports.Prisma.ProfileScalarFieldEnum = {
   updatedAt: 'updatedAt'
 };
 
+exports.Prisma.UserRoleScalarFieldEnum = {
+  id: 'id',
+  title: 'title',
+  userIds: 'userIds',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+};
+
 exports.Prisma.UserScalarFieldEnum = {
   id: 'id',
   password: 'password',
   email: 'email',
   profileId: 'profileId',
+  roleIds: 'roleIds',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt'
 };
@@ -151,10 +160,15 @@ exports.Prisma.NullsOrder = {
   first: 'first',
   last: 'last'
 };
-
+exports.RoleEnum = exports.$Enums.RoleEnum = {
+  USER: 'USER',
+  MANAGER: 'MANAGER',
+  ADMIN: 'ADMIN'
+};
 
 exports.Prisma.ModelName = {
   Profile: 'Profile',
+  UserRole: 'UserRole',
   User: 'User'
 };
 

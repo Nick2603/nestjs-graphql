@@ -1,7 +1,7 @@
 import { Injectable, Scope } from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service';
 import * as DataLoader from 'dataloader';
-import type { User } from '@prisma/client';
+import type { User } from 'prisma/generated/prisma';
 
 @Injectable({ scope: Scope.REQUEST })
 export class UserDataLoader {

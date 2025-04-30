@@ -7,6 +7,9 @@ model User {
   profile   Profile?
   profileId String?  @unique @map("profile_id")
 
+  roles   UserRole[] @relation("User_Role")
+  roleIds String[]   @map("role_ids")
+
   createdAt DateTime @default(now()) @map("created_at")
   updatedAt DateTime @updatedAt @map("updated_at")
 

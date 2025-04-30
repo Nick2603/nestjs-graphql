@@ -1,0 +1,19 @@
+model UserRole {
+  id String @id @default(uuid())
+
+  title RoleEnum @unique
+
+  users   User[]   @relation("User_Role")
+  userIds String[] @map("user_ids")
+
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  @@map("user_roles")
+}
+
+enum RoleEnum {
+  USER
+  MANAGER
+  ADMIN
+}

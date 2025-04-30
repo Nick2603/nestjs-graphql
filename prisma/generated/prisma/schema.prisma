@@ -12,6 +12,26 @@ model Profile {
   @@map("profiles")
 }
 
+model UserRole {
+  id String @id @default(uuid())
+
+  title RoleEnum @unique
+
+  users   User[]   @relation("User_Role")
+  userIds String[] @map("user_ids")
+
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  @@map("user_roles")
+}
+
+enum RoleEnum {
+  USER
+  MANAGER
+  ADMIN
+}
+
 generator client {
   provider        = "prisma-client-js"
   output          = "../generated/prisma"
@@ -31,6 +51,9 @@ model User {
 
   profile   Profile?
   profileId String?  @unique @map("profile_id")
+
+  roles   UserRole[] @relation("User_Role")
+  roleIds String[]   @map("role_ids")
 
   createdAt DateTime @default(now()) @map("created_at")
   updatedAt DateTime @updatedAt @map("updated_at")
