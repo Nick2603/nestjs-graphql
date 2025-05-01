@@ -21,8 +21,8 @@
     "prisma:generate": "dotenv -e .env.development -- npx prisma generate",
     "prisma:migrate": "dotenv -e .env.development -- npx prisma migrate dev",
     "prisma:studio": "dotenv -e .env.development -- npx prisma studio",
-    "docker:start": "docker-compose up -d",
-    "docker:stop": "docker compose down"
+    "docker:up": "docker-compose up -d",
+    "docker:down": "docker compose down"
   },
   "dependencies": {
     "@apollo/server": "^4.12.0",

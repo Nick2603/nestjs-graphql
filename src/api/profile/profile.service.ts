@@ -26,7 +26,7 @@ export class ProfileService {
     userId: string,
     data: CreateProfileInput,
   ): Promise<Profile> {
-    if (!userId) throw new BadRequestException('userId должен быть указан');
+    if (!userId) throw new BadRequestException('userId must be specified');
 
     const { id: profileUserId } =
       await this.userQueryRepository.getUser(userId);
@@ -38,7 +38,7 @@ export class ProfileService {
     userId: string,
     data: UpdateProfileInput,
   ): Promise<Profile> {
-    if (!userId) throw new BadRequestException('userId должен быть указан');
+    if (!userId) throw new BadRequestException('userId must be specified');
 
     const { userId: profileUserId } = await this.getProfile(userId);
 

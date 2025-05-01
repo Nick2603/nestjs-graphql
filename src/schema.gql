@@ -11,15 +11,26 @@ input CreateUserInput {
   password: String!
 }
 
+input CreateUserRoleInput {
+  managedGenres: [String!]!
+  title: RoleEnum!
+}
+
 """
 A date-time string at UTC, such as 2019-12-03T09:54:33Z, compliant with the date-time format.
 """
 scalar DateTime
 
 type Mutation {
+  addManagedGenres(genres: [String!]!, id: String!): UserRole!
+  assignUserRole(roleId: String!, userId: String!): UserRole!
   createProfile(data: CreateProfileInput!, userId: String!): Profile!
   createUser(data: CreateUserInput!): User!
+  createUserRole(data: CreateUserRoleInput!): UserRole!
   deleteUser(id: String!): User!
+  deleteUserRole(id: String!): UserRole!
+  removeManagedGenres(genres: [String!]!, id: String!): UserRole!
+  unassignUserRole(roleId: String!, userId: String!): UserRole!
   updateProfile(data: UpdateProfileInput!, userId: String!): Profile!
   updateUser(data: UpdateUserInput!, id: String!): User!
 }
@@ -37,7 +48,15 @@ type Query {
   getProfile(userId: String!): Profile!
   getProfiles: [Profile!]!
   getUser(id: String!): User!
+  getUserRole(id: String!): UserRole!
+  getUserRoles: [UserRole!]!
   getUsers: [User!]!
+}
+
+enum RoleEnum {
+  ADMIN
+  MANAGER
+  USER
 }
 
 input UpdateProfileInput {
@@ -56,7 +75,17 @@ type User {
   password: String!
   profile: Profile
   profileId: String
-  roleIds: String
-  roles: Profile
+  roleIds: [String!]
+  roles: [UserRole]
   updatedAt: DateTime!
+}
+
+type UserRole {
+  createdAt: DateTime!
+  id: ID!
+  managedGenres: [String!]!
+  title: RoleEnum!
+  updatedAt: DateTime!
+  userIds: [String]
+  users: [User]
 }

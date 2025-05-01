@@ -1,7 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service';
-import { RoleEnum } from 'prisma/generated/prisma';
-import { Prisma } from '@prisma/client';
+import { Prisma, RoleEnum } from 'prisma/generated/prisma';
 
 @Injectable()
 export class AssignUserRoleSeeder {
@@ -31,7 +30,7 @@ export class AssignUserRoleSeeder {
           async (tx) => {
             const updatedRoleIds = [...(user?.roleIds ?? []), userRole.id];
 
-            await this.prisma.user.update({
+            await tx.user.update({
               where: { id: user.id },
               data: {
                 roleIds: {
@@ -43,7 +42,16 @@ export class AssignUserRoleSeeder {
               },
             });
 
-            const updatedUserIds = [...(userRole?.userIds ?? []), user.id];
+            const userRoleAfterUpdate = await tx.userRole.findUnique({
+              where: {
+                id: userRole.id,
+              },
+            });
+
+            const updatedUserIds = [
+              ...(userRoleAfterUpdate?.userIds ?? []),
+              user.id,
+            ];
 
             await tx.userRole.update({
               where: { id: userRole.id },
@@ -58,7 +66,7 @@ export class AssignUserRoleSeeder {
             isolationLevel: Prisma.TransactionIsolationLevel.RepeatableRead,
           },
         );
-        console.warn(`Added role for user with id: ${user.id}`);
+        console.log(`Added role for user with id: ${user.id}`);
       }
     }
   }

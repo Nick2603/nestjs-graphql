@@ -21,11 +21,11 @@ export class UserService {
   }
 
   async createUser(data: CreateUserInput): Promise<User> {
-    return await this.userRepository.createUser(data);
+    return await this.userRepository.createUserWithUserRole(data);
   }
 
   async updateUser(id: string, data: UpdateUserInput): Promise<User> {
-    if (!id) throw new BadRequestException('id должен быть указан');
+    if (!id) throw new BadRequestException('id must be specified');
 
     const { id: userId } = await this.getUser(id);
 
@@ -33,10 +33,10 @@ export class UserService {
   }
 
   async deleteUser(id: string): Promise<User> {
-    if (!id) throw new BadRequestException('id должен быть указан');
+    if (!id) throw new BadRequestException('id must be specified');
 
     const { id: userId } = await this.getUser(id);
 
-    return await this.userRepository.deleteUser(userId);
+    return await this.userRepository.deleteUserWithRoleCleanup(userId);
   }
 }

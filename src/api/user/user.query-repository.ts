@@ -20,7 +20,7 @@ export class UserQueryRepository {
       },
     });
 
-    if (!user) throw new NotFoundException('Пользователь не найден');
+    if (!user) throw new NotFoundException('User not found');
 
     return user;
   }

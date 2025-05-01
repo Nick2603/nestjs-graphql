@@ -12,12 +12,15 @@ import { CreateUserInput } from './dto/create-user.input';
 import { UpdateUserInput } from './dto/update-user.input';
 import { ProfileDataLoader } from 'src/infrastructure/data-loader/profile.data-loader';
 import { Profile } from '../profile/models/profile.model';
+import { UserRoleDataLoader } from 'src/infrastructure/data-loader/user-role.data-loader';
+import { UserRole } from '../user-role/models/user-role.model';
 
 @Resolver(() => User)
 export class UserResolver {
   constructor(
     private readonly userService: UserService,
     private readonly profileDataLoader: ProfileDataLoader,
+    private readonly userRoleDataLoader: UserRoleDataLoader,
   ) {}
 
   @Query(() => [User])
@@ -53,5 +56,12 @@ export class UserResolver {
     return profileId
       ? await this.profileDataLoader.createLoader().load(profileId)
       : null;
+  }
+
+  @ResolveField('roles', () => [UserRole], { nullable: 'itemsAndList' })
+  async users(@Parent() { roleIds }: User) {
+    return roleIds?.length
+      ? await this.userRoleDataLoader.createLoader().loadMany(roleIds)
+      : [];
   }
 }

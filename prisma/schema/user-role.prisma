@@ -6,6 +6,8 @@ model UserRole {
   users   User[]   @relation("User_Role")
   userIds String[] @map("user_ids")
 
+  managedGenres String[] @map("managed_genres")
+
   createdAt DateTime @default(now()) @map("created_at")
   updatedAt DateTime @updatedAt @map("updated_at")
 

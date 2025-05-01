@@ -20,7 +20,7 @@ export class ProfileQueryRepository {
       },
     });
 
-    if (!profile) throw new NotFoundException('Профиль не найден');
+    if (!profile) throw new NotFoundException('Profile not found');
 
     return profile;
   }
