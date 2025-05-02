@@ -4,14 +4,14 @@ import {
   type UserRole as PrismaUserRole,
 } from 'prisma/generated/prisma';
 import { User } from 'src/api/user/models/user.model';
-import { DbEntity } from 'src/common/dbEntity';
+import { EntityGraphql } from 'src/common/graphql/entity.graphql';
 
 registerEnumType(RoleEnum, {
   name: 'RoleEnum',
 });
 
 @ObjectType()
-export class UserRole extends DbEntity implements PrismaUserRole {
+export class UserRole extends EntityGraphql implements PrismaUserRole {
   @Field(() => RoleEnum)
   title: RoleEnum;
 

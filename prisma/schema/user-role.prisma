@@ -3,7 +3,7 @@ model UserRole {
 
   title RoleEnum @unique
 
-  users   User[]   @relation("User_Role")
+  users   User[]   @relation("user_role")
   userIds String[] @map("user_ids")
 
   managedGenres String[] @map("managed_genres")

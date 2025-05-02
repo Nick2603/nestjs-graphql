@@ -1,11 +1,12 @@
 import { Field, ObjectType } from '@nestjs/graphql';
 import type { User as PrismaUser } from 'prisma/generated/prisma';
+import { Article } from 'src/api/article/models/article.model';
 import { Profile } from 'src/api/profile/models/profile.model';
 import { UserRole } from 'src/api/user-role/models/user-role.model';
-import { DbEntity } from 'src/common/dbEntity';
+import { EntityGraphql } from 'src/common/graphql/entity.graphql';
 
 @ObjectType()
-export class User extends DbEntity implements PrismaUser {
+export class User extends EntityGraphql implements PrismaUser {
   @Field(() => String)
   password: string;
 
@@ -23,4 +24,10 @@ export class User extends DbEntity implements PrismaUser {
 
   @Field(() => [UserRole])
   roles: UserRole[];
+
+  @Field(() => [String], { nullable: true })
+  articleIds: string[];
+
+  @Field(() => [Article], { nullable: true })
+  articles: Article[];
 }

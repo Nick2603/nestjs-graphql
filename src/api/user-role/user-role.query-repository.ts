@@ -13,7 +13,7 @@ export class UserRoleQueryRepository {
   /**
    * Throws NotFoundException if user is not found.
    */
-  async getUserRole(id: string): Promise<UserRole> {
+  async getUserRole(id: string): Promise<UserRole | never> {
     const userRole = await this.prisma.userRole.findUnique({
       where: {
         id,

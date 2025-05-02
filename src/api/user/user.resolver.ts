@@ -14,6 +14,8 @@ import { ProfileDataLoader } from 'src/infrastructure/data-loader/profile.data-l
 import { Profile } from '../profile/models/profile.model';
 import { UserRoleDataLoader } from 'src/infrastructure/data-loader/user-role.data-loader';
 import { UserRole } from '../user-role/models/user-role.model';
+import { ArticleDataLoader } from 'src/infrastructure/data-loader/article.data-loader';
+import { Article } from '../article/models/article.model';
 
 @Resolver(() => User)
 export class UserResolver {
@@ -21,6 +23,7 @@ export class UserResolver {
     private readonly userService: UserService,
     private readonly profileDataLoader: ProfileDataLoader,
     private readonly userRoleDataLoader: UserRoleDataLoader,
+    private readonly articleDataLoader: ArticleDataLoader,
   ) {}
 
   @Query(() => [User])
@@ -62,6 +65,13 @@ export class UserResolver {
   async users(@Parent() { roleIds }: User) {
     return roleIds?.length
       ? await this.userRoleDataLoader.createLoader().loadMany(roleIds)
+      : [];
+  }
+
+  @ResolveField('articles', () => [Article], { nullable: 'itemsAndList' })
+  async articles(@Parent() { articleIds }: User) {
+    return articleIds?.length
+      ? await this.articleDataLoader.createLoader().loadMany(articleIds)
       : [];
   }
 }

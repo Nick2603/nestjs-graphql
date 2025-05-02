@@ -1,16 +1,19 @@
 import { Field, ObjectType } from '@nestjs/graphql';
-import type { Profile as PrismaProfile } from 'prisma/generated/prisma';
+import type { Article as PrismaArticle } from 'prisma/generated/prisma';
 import { User } from 'src/api/user/models/user.model';
 import { EntityGraphql } from 'src/common/graphql/entity.graphql';
 
 @ObjectType()
-export class Profile extends EntityGraphql implements PrismaProfile {
+export class Article extends EntityGraphql implements PrismaArticle {
   @Field(() => String)
-  name: string;
+  text: string;
+
+  @Field(() => [String])
+  genres: string[];
 
   @Field(() => String)
-  userId: string;
+  authorId: string;
 
   @Field(() => User)
-  user: User;
+  author: User;
 }

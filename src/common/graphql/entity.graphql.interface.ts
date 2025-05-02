@@ -1,7 +1,7 @@
-import { Field, ID, ObjectType } from '@nestjs/graphql';
+import { Field, ID, InterfaceType } from '@nestjs/graphql';
 
-@ObjectType({ isAbstract: true })
-export class DbEntity {
+@InterfaceType()
+export abstract class IEntityGraphql {
   @Field(() => ID)
   id: string;
 

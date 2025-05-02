@@ -13,7 +13,7 @@ export class UserQueryRepository {
   /**
    * Throws NotFoundException if user is not found.
    */
-  async getUser(id: string): Promise<User> {
+  async getUser(id: string): Promise<User | never> {
     const user = await this.prisma.user.findUnique({
       where: {
         id,

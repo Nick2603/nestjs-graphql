@@ -2,7 +2,8 @@ import { BadRequestException, Injectable } from '@nestjs/common';
 import { UserRoleQueryRepository } from './user-role.query-repository';
 import { UserRoleRepository } from './user-role.repository';
 import type { CreateUserRoleInput } from './dto/create-user-role.input';
-import type { UserRole } from 'prisma/generated/prisma';
+import { RoleEnum, type UserRole } from 'prisma/generated/prisma';
+import { sanitizeGenres } from 'src/common/utils/sanitizeGenres';
 
 @Injectable()
 export class UserRoleService {
@@ -20,7 +21,17 @@ export class UserRoleService {
   }
 
   async createUserRole(data: CreateUserRoleInput): Promise<UserRole> {
-    return await this.userRoleRepository.createUserRole(data);
+    const { title, managedGenres } = data;
+
+    if (title === RoleEnum.MANAGER && !managedGenres?.length)
+      throw new BadRequestException(
+        'For manager role managed genres should be specified',
+      );
+
+    return await this.userRoleRepository.createUserRole({
+      title,
+      managedGenres: managedGenres ? sanitizeGenres(managedGenres) : [],
+    });
   }
 
   async deleteUserRole(id: string): Promise<UserRole> {
@@ -28,21 +39,16 @@ export class UserRoleService {
   }
 
   async addManagedGenres(id: string, genres: string[]): Promise<UserRole> {
-    const sanitizedGenres = genres
-      .map((genre) => genre.trim().toLowerCase())
-      .filter(Boolean);
-
-    return await this.userRoleRepository.addManagedGenres(id, sanitizedGenres);
+    return await this.userRoleRepository.addManagedGenres(
+      id,
+      sanitizeGenres(genres),
+    );
   }
 
   async removeManagedGenres(id: string, genres: string[]): Promise<UserRole> {
-    const sanitizedGenres = genres
-      .map((genre) => genre.trim().toLowerCase())
-      .filter(Boolean);
-
     return await this.userRoleRepository.removeManagedGenres(
       id,
-      sanitizedGenres,
+      sanitizeGenres(genres),
     );
   }
 

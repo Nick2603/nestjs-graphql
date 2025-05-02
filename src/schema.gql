@@ -2,6 +2,21 @@
 # THIS FILE WAS AUTOMATICALLY GENERATED (DO NOT MODIFY)
 # ------------------------------------------------------
 
+type Article implements IEntityGraphql {
+  author: User
+  authorId: String!
+  createdAt: DateTime!
+  genres: [String!]!
+  id: ID!
+  text: String!
+  updatedAt: DateTime!
+}
+
+input CreateArticleInput {
+  genres: [String!]!
+  text: String!
+}
+
 input CreateProfileInput {
   name: String!
 }
@@ -12,7 +27,7 @@ input CreateUserInput {
 }
 
 input CreateUserRoleInput {
-  managedGenres: [String!]!
+  managedGenres: [String!]
   title: RoleEnum!
 }
 
@@ -21,21 +36,30 @@ A date-time string at UTC, such as 2019-12-03T09:54:33Z, compliant with the date
 """
 scalar DateTime
 
+interface IEntityGraphql {
+  createdAt: DateTime!
+  id: ID!
+  updatedAt: DateTime!
+}
+
 type Mutation {
   addManagedGenres(genres: [String!]!, id: String!): UserRole!
   assignUserRole(roleId: String!, userId: String!): UserRole!
+  createArticle(data: CreateArticleInput!, userId: String!): Article!
   createProfile(data: CreateProfileInput!, userId: String!): Profile!
   createUser(data: CreateUserInput!): User!
   createUserRole(data: CreateUserRoleInput!): UserRole!
+  deleteArticle(id: String!): Article!
   deleteUser(id: String!): User!
   deleteUserRole(id: String!): UserRole!
   removeManagedGenres(genres: [String!]!, id: String!): UserRole!
   unassignUserRole(roleId: String!, userId: String!): UserRole!
+  updateArticle(data: UpdateArticleInput!, id: String!): Article!
   updateProfile(data: UpdateProfileInput!, userId: String!): Profile!
   updateUser(data: UpdateUserInput!, id: String!): User!
 }
 
-type Profile {
+type Profile implements IEntityGraphql {
   createdAt: DateTime!
   id: ID!
   name: String!
@@ -45,6 +69,8 @@ type Profile {
 }
 
 type Query {
+  getArticle(id: String!): Article!
+  getArticles: [Article!]!
   getProfile(userId: String!): Profile!
   getProfiles: [Profile!]!
   getUser(id: String!): User!
@@ -59,6 +85,11 @@ enum RoleEnum {
   USER
 }
 
+input UpdateArticleInput {
+  genres: [String]
+  text: String
+}
+
 input UpdateProfileInput {
   name: String
 }
@@ -68,7 +99,9 @@ input UpdateUserInput {
   password: String
 }
 
-type User {
+type User implements IEntityGraphql {
+  articleIds: [String!]
+  articles: [Article!]
   createdAt: DateTime!
   email: String!
   id: ID!
@@ -80,7 +113,7 @@ type User {
   updatedAt: DateTime!
 }
 
-type UserRole {
+type UserRole implements IEntityGraphql {
   createdAt: DateTime!
   id: ID!
   managedGenres: [String!]!
