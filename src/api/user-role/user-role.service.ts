@@ -2,8 +2,9 @@ import { BadRequestException, Injectable } from '@nestjs/common';
 import { UserRoleQueryRepository } from './user-role.query-repository';
 import { UserRoleRepository } from './user-role.repository';
 import type { CreateUserRoleInput } from './dto/create-user-role.input';
-import { RoleEnum, type UserRole } from 'prisma/generated/prisma';
+import { RoleEnum } from 'prisma/generated/prisma';
 import { sanitizeGenres } from 'src/common/utils/sanitizeGenres';
+import type { DBUserRole } from 'src/common/db/user-role.interface';
 
 @Injectable()
 export class UserRoleService {
@@ -12,16 +13,21 @@ export class UserRoleService {
     private readonly userRoleRepository: UserRoleRepository,
   ) {}
 
-  async getUserRoles(): Promise<UserRole[]> {
+  async getUserRoles(): Promise<DBUserRole[]> {
     return await this.userRoleQueryRepository.getUserRoles();
   }
 
-  async getUserRole(id: string): Promise<UserRole> {
+  async getUserRole(id: string): Promise<DBUserRole> {
     return await this.userRoleQueryRepository.getUserRole(id);
   }
 
-  async createUserRole(data: CreateUserRoleInput): Promise<UserRole> {
+  async createUserRole(data: CreateUserRoleInput): Promise<DBUserRole> {
     const { title, managedGenres } = data;
+
+    if (title === RoleEnum.ADMIN || title === RoleEnum.USER)
+      throw new BadRequestException(
+        'ADMIN and USER roles are default and created automatically',
+      );
 
     if (title === RoleEnum.MANAGER && !managedGenres?.length)
       throw new BadRequestException(
@@ -34,25 +40,32 @@ export class UserRoleService {
     });
   }
 
-  async deleteUserRole(id: string): Promise<UserRole> {
+  async deleteUserRole(id: string): Promise<DBUserRole> {
+    const { title } = await this.getUserRole(id);
+
+    if (title === RoleEnum.ADMIN || title === RoleEnum.USER)
+      throw new BadRequestException(
+        'ADMIN and USER roles are default and cannot be deleted',
+      );
+
     return await this.userRoleRepository.deleteUserRoleWithCleanUp(id);
   }
 
-  async addManagedGenres(id: string, genres: string[]): Promise<UserRole> {
+  async addManagedGenres(id: string, genres: string[]): Promise<DBUserRole> {
     return await this.userRoleRepository.addManagedGenres(
       id,
       sanitizeGenres(genres),
     );
   }
 
-  async removeManagedGenres(id: string, genres: string[]): Promise<UserRole> {
+  async removeManagedGenres(id: string, genres: string[]): Promise<DBUserRole> {
     return await this.userRoleRepository.removeManagedGenres(
       id,
       sanitizeGenres(genres),
     );
   }
 
-  async assignUserRole(userId: string, roleId: string): Promise<UserRole> {
+  async assignUserRole(userId: string, roleId: string): Promise<DBUserRole> {
     if (!userId || !roleId)
       throw new BadRequestException(
         'Both userId and roleId should be specified',
@@ -61,7 +74,7 @@ export class UserRoleService {
     return await this.userRoleRepository.assignUserRole(userId, roleId);
   }
 
-  async unassignUserRole(userId: string, roleId: string): Promise<UserRole> {
+  async unassignUserRole(userId: string, roleId: string): Promise<DBUserRole> {
     if (!userId || !roleId)
       throw new BadRequestException(
         'Both userId and roleId should be specified',

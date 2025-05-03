@@ -1,10 +1,16 @@
 import { IsEnum, IsOptional, IsString, Length } from 'class-validator';
 import { InputType, Field } from '@nestjs/graphql';
-import { RoleEnum, type UserRole } from 'prisma/generated/prisma';
+import { RoleEnum } from 'prisma/generated/prisma';
+import type {
+  DBUserRole,
+  RoleManager,
+} from 'src/common/db/user-role.interface';
 
 @InputType()
 export class CreateUserRoleInput
-  implements Pick<UserRole, 'title'>, Partial<Pick<UserRole, 'managedGenres'>>
+  implements
+    Pick<DBUserRole, 'title'>,
+    Partial<Pick<RoleManager, 'managedGenres'>>
 {
   @IsEnum(RoleEnum)
   @Field(() => RoleEnum)

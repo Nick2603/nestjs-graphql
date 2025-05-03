@@ -1,19 +1,20 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { PrismaService } from 'src/infrastructure/prisma/prisma.service';
 import type { CreateUserRoleInput } from './dto/create-user-role.input';
-import { Prisma, type UserRole } from 'prisma/generated/prisma';
+import { Prisma } from 'prisma/generated/prisma';
+import type { DBUserRole } from 'src/common/db/user-role.interface';
 
 @Injectable()
 export class UserRoleRepository {
   constructor(private readonly prisma: PrismaService) {}
 
-  async createUserRole(data: CreateUserRoleInput): Promise<UserRole> {
+  async createUserRole(data: CreateUserRoleInput): Promise<DBUserRole> {
     return await this.prisma.userRole.create({
       data,
     });
   }
 
-  async deleteUserRole(id: string): Promise<UserRole> {
+  async deleteUserRole(id: string): Promise<DBUserRole> {
     return await this.prisma.userRole.delete({
       where: {
         id,
@@ -21,7 +22,7 @@ export class UserRoleRepository {
     });
   }
 
-  async deleteUserRoleWithCleanUp(roleId: string): Promise<UserRole> {
+  async deleteUserRoleWithCleanUp(roleId: string): Promise<DBUserRole> {
     return await this.prisma.$transaction(
       async (tx) => {
         const userRole = await tx.userRole.findUnique({
@@ -56,7 +57,7 @@ export class UserRoleRepository {
     );
   }
 
-  async addManagedGenres(id: string, genres: string[]): Promise<UserRole> {
+  async addManagedGenres(id: string, genres: string[]): Promise<DBUserRole> {
     const userRole = await this.prisma.userRole.findUnique({
       where: { id },
       select: { managedGenres: true },
@@ -78,7 +79,7 @@ export class UserRoleRepository {
     });
   }
 
-  async removeManagedGenres(id: string, genres: string[]): Promise<UserRole> {
+  async removeManagedGenres(id: string, genres: string[]): Promise<DBUserRole> {
     const userRole = await this.prisma.userRole.findUnique({
       where: { id },
       select: { managedGenres: true },
@@ -100,7 +101,7 @@ export class UserRoleRepository {
     });
   }
 
-  async assignUserRole(userId: string, roleId: string): Promise<UserRole> {
+  async assignUserRole(userId: string, roleId: string): Promise<DBUserRole> {
     return this.prisma.$transaction(async (tx) => {
       const user = await tx.user.findUnique({ where: { id: userId } });
       const role = await tx.userRole.findUnique({ where: { id: roleId } });
@@ -130,7 +131,7 @@ export class UserRoleRepository {
     });
   }
 
-  async unassignUserRole(userId: string, roleId: string): Promise<UserRole> {
+  async unassignUserRole(userId: string, roleId: string): Promise<DBUserRole> {
     return this.prisma.$transaction(async (tx) => {
       const user = await tx.user.findUnique({ where: { id: userId } });
       const role = await tx.userRole.findUnique({ where: { id: roleId } });

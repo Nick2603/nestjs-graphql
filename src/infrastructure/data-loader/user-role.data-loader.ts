@@ -1,14 +1,14 @@
 import { Injectable, Scope } from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service';
 import * as DataLoader from 'dataloader';
-import type { UserRole } from 'prisma/generated/prisma';
+import type { DBUserRole } from 'src/common/db/user-role.interface';
 
 @Injectable({ scope: Scope.REQUEST })
 export class UserRoleDataLoader {
   constructor(private readonly prisma: PrismaService) {}
 
   createLoader() {
-    return new DataLoader<string, UserRole | null>(
+    return new DataLoader<string, DBUserRole | null>(
       async (userRoleIds: readonly string[]) => {
         const userRoles = await this.prisma.userRole.findMany({
           where: {

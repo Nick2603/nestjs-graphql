@@ -1,7 +1,7 @@
 model UserRole {
   id String @id @default(uuid())
 
-  title RoleEnum @unique
+  title RoleEnum
 
   users   User[]   @relation("user_role")
   userIds String[] @map("user_ids")

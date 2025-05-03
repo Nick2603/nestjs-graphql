@@ -1,8 +1,10 @@
+import { DEFAULT_ROLE_IDS } from 'src/common/db/defaultRoleIds';
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { PrismaService } from 'src/infrastructure/prisma/prisma.service';
 import { Prisma, RoleEnum, type User } from 'prisma/generated/prisma';
 import type { CreateUserInput } from './dto/create-user.input';
 import type { UpdateUserInput } from './dto/update-user.input';
+import type { DBUserRole } from 'src/common/db/user-role.interface';
 
 @Injectable()
 export class UserRepository {
@@ -15,8 +17,8 @@ export class UserRepository {
   }
 
   async createUserWithUserRole(data: CreateUserInput): Promise<User> {
-    const userRole = await this.prisma.userRole.findUnique({
-      where: { title: RoleEnum.USER },
+    const userRole: DBUserRole | null = await this.prisma.userRole.findUnique({
+      where: { id: DEFAULT_ROLE_IDS[RoleEnum.USER] },
     });
 
     if (!userRole) throw new NotFoundException('User role not found');

@@ -1,3 +1,4 @@
+import { DEFAULT_ROLE_IDS } from 'src/common/db/defaultRoleIds';
 import { Injectable } from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service';
 import { Prisma, RoleEnum } from 'prisma/generated/prisma';
@@ -8,7 +9,7 @@ export class AssignUserRoleSeeder {
 
   async assignUserRole() {
     const userRole = await this.prisma.userRole.findUnique({
-      where: { title: RoleEnum.USER },
+      where: { id: DEFAULT_ROLE_IDS[RoleEnum.USER] },
     });
 
     if (!userRole) {

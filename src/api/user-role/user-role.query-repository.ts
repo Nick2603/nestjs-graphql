@@ -1,19 +1,19 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
-import type { UserRole } from 'prisma/generated/prisma';
+import type { DBUserRole } from 'src/common/db/user-role.interface';
 import { PrismaService } from 'src/infrastructure/prisma/prisma.service';
 
 @Injectable()
 export class UserRoleQueryRepository {
   constructor(private readonly prisma: PrismaService) {}
 
-  async getUserRoles(): Promise<UserRole[]> {
+  async getUserRoles(): Promise<DBUserRole[]> {
     return await this.prisma.userRole.findMany();
   }
 
   /**
    * Throws NotFoundException if user is not found.
    */
-  async getUserRole(id: string): Promise<UserRole | never> {
+  async getUserRole(id: string): Promise<DBUserRole | never> {
     const userRole = await this.prisma.userRole.findUnique({
       where: {
         id,
