@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service';
 import { RoleEnum } from 'prisma/generated/prisma';
-import { DEFAULT_ROLE_IDS } from 'src/common/db/defaultRoleIds';
+import { DEFAULT_ROLE_IDS } from 'src/common/db/default-role-ids';
 
 @Injectable()
 export class DefaultRolesSeeder {

@@ -12,6 +12,7 @@ import { CreateArticleInput } from './dto/create-article.input';
 import { UpdateArticleInput } from './dto/update-article.input';
 import { UserDataLoader } from 'src/infrastructure/data-loader/user.data-loader';
 import { User } from '../user/models/user.model';
+import { Public } from '../auth/decorators/public.decorator';
 
 @Resolver(() => Article)
 export class ArticleResolver {
@@ -20,11 +21,13 @@ export class ArticleResolver {
     private readonly userDataLoader: UserDataLoader,
   ) {}
 
+  @Public()
   @Query(() => [Article])
   async getArticles() {
     return this.articleService.getArticles();
   }
 
+  @Public()
   @Query(() => Article)
   async getArticle(@Args('id') id: string) {
     return this.articleService.getArticle(id);

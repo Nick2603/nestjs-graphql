@@ -1,4 +1,4 @@
-import { DEFAULT_ROLE_IDS } from 'src/common/db/defaultRoleIds';
+import { DEFAULT_ROLE_IDS } from 'src/common/db/default-role-ids';
 import { Injectable } from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service';
 import { Prisma, RoleEnum } from 'prisma/generated/prisma';

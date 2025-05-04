@@ -9,6 +9,6 @@ import { DataLoaderModule } from 'src/infrastructure/data-loader/data-loader.mod
 @Module({
   imports: [PrismaModule, DataLoaderModule],
   providers: [UserResolver, UserService, UserRepository, UserQueryRepository],
-  exports: [UserQueryRepository],
+  exports: [UserQueryRepository, UserService],
 })
 export class UserModule {}

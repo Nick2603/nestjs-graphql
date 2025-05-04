@@ -16,6 +16,11 @@ import { UserRoleDataLoader } from 'src/infrastructure/data-loader/user-role.dat
 import { UserRole } from '../user-role/models/user-role.model';
 import { ArticleDataLoader } from 'src/infrastructure/data-loader/article.data-loader';
 import { Article } from '../article/models/article.model';
+import { CurrentUser } from '../auth/decorators/current-user.decorator';
+import { Public } from '../auth/decorators/public.decorator';
+import type { UserWithRoles } from './interfaces/user-with-roles.interface';
+import { Roles } from '../auth/decorators/roles.decorator';
+import { RoleEnum } from 'prisma/generated/prisma';
 
 @Resolver(() => User)
 export class UserResolver {
@@ -26,21 +31,30 @@ export class UserResolver {
     private readonly articleDataLoader: ArticleDataLoader,
   ) {}
 
+  @Public()
   @Query(() => [User])
   async getUsers() {
     return this.userService.getUsers();
   }
 
+  @Public()
   @Query(() => User)
   async getUser(@Args('id') id: string) {
     return this.userService.getUser(id);
   }
 
+  @Query(() => User)
+  getMe(@CurrentUser() user: UserWithRoles) {
+    return user;
+  }
+
+  @Roles(RoleEnum.ADMIN)
   @Mutation(() => User)
   async createUser(@Args('data') data: CreateUserInput) {
     return await this.userService.createUser(data);
   }
 
+  @Roles(RoleEnum.ADMIN)
   @Mutation(() => User)
   async updateUser(
     @Args('id') id: string,
@@ -49,6 +63,7 @@ export class UserResolver {
     return await this.userService.updateUser(id, data);
   }
 
+  @Roles(RoleEnum.ADMIN)
   @Mutation(() => User)
   async deleteUser(@Args('id') id: string) {
     return this.userService.deleteUser(id);

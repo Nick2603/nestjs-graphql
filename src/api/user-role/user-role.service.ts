@@ -3,7 +3,7 @@ import { UserRoleQueryRepository } from './user-role.query-repository';
 import { UserRoleRepository } from './user-role.repository';
 import type { CreateUserRoleInput } from './dto/create-user-role.input';
 import { RoleEnum } from 'prisma/generated/prisma';
-import { sanitizeGenres } from 'src/common/utils/sanitizeGenres';
+import { sanitizeGenres } from 'src/common/utils/sanitize-genres';
 import type { DBUserRole } from 'src/common/db/user-role.interface';
 
 @Injectable()

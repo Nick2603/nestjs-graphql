@@ -25,4 +25,8 @@ export class AppConfigService {
   get corsOrigin(): string[] {
     return this.config.corsOrigin.split(',');
   }
+
+  get jwtSecret(): string {
+    return this.config.jwtSecret;
+  }
 }

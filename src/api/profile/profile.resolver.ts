@@ -12,6 +12,7 @@ import { UpdateProfileInput } from './dto/update-profile.input';
 import { CreateProfileInput } from './dto/create-profile.input';
 import { User } from '../user/models/user.model';
 import { UserDataLoader } from 'src/infrastructure/data-loader/user.data-loader';
+import { Public } from '../auth/decorators/public.decorator';
 
 @Resolver(() => Profile)
 export class ProfileResolver {
@@ -20,11 +21,13 @@ export class ProfileResolver {
     private readonly userDataLoader: UserDataLoader,
   ) {}
 
+  @Public()
   @Query(() => [Profile])
   async getProfiles() {
     return this.profileService.getProfiles();
   }
 
+  @Public()
   @Query(() => Profile)
   async getProfile(@Args('userId') userId: string) {
     return this.profileService.getProfile(userId);

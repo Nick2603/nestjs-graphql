@@ -12,6 +12,15 @@ type Article implements IEntityGraphql {
   updatedAt: DateTime!
 }
 
+type Auth {
+  accessToken: String!
+}
+
+input AuthInput {
+  email: String!
+  password: String!
+}
+
 input CreateArticleInput {
   genres: [String!]!
   text: String!
@@ -52,6 +61,10 @@ type Mutation {
   deleteArticle(id: String!): Article!
   deleteUser(id: String!): User!
   deleteUserRole(id: String!): UserRole!
+  login(data: AuthInput!): Auth!
+  logout: Boolean!
+  refresh: Auth!
+  register(data: AuthInput!): Auth!
   removeManagedGenres(genres: [String!]!, id: String!): UserRole!
   unassignUserRole(roleId: String!, userId: String!): UserRole!
   updateArticle(data: UpdateArticleInput!, id: String!): Article!
@@ -71,6 +84,7 @@ type Profile implements IEntityGraphql {
 type Query {
   getArticle(id: String!): Article!
   getArticles: [Article!]!
+  getMe: User!
   getProfile(userId: String!): Profile!
   getProfiles: [Profile!]!
   getUser(id: String!): User!

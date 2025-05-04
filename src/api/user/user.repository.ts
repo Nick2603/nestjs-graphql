@@ -1,5 +1,9 @@
-import { DEFAULT_ROLE_IDS } from 'src/common/db/defaultRoleIds';
-import { Injectable, NotFoundException } from '@nestjs/common';
+import { DEFAULT_ROLE_IDS } from 'src/common/db/default-role-ids';
+import {
+  ConflictException,
+  Injectable,
+  NotFoundException,
+} from '@nestjs/common';
 import { PrismaService } from 'src/infrastructure/prisma/prisma.service';
 import { Prisma, RoleEnum, type User } from 'prisma/generated/prisma';
 import type { CreateUserInput } from './dto/create-user.input';
@@ -17,6 +21,15 @@ export class UserRepository {
   }
 
   async createUserWithUserRole(data: CreateUserInput): Promise<User> {
+    const existed = await this.prisma.user.findUnique({
+      where: {
+        email: data.email,
+      },
+    });
+
+    if (existed)
+      throw new ConflictException('User with this email already exists');
+
     const userRole: DBUserRole | null = await this.prisma.userRole.findUnique({
       where: { id: DEFAULT_ROLE_IDS[RoleEnum.USER] },
     });
@@ -57,6 +70,17 @@ export class UserRepository {
   }
 
   async updateUser(id: string, data: UpdateUserInput): Promise<User> {
+    if (data.email) {
+      const existed = await this.prisma.user.findUnique({
+        where: {
+          email: data.email,
+        },
+      });
+
+      if (existed)
+        throw new ConflictException('User with this email already exists');
+    }
+
     return await this.prisma.user.update({
       where: {
         id,
