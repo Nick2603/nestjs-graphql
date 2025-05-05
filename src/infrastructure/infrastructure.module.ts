@@ -6,6 +6,7 @@ import { graphqlSetUp } from './graphql/graphql.set-up';
 import { ApolloDriverConfig } from '@nestjs/apollo';
 import { DataLoaderModule } from './data-loader/data-loader.module';
 import { SeedersModule } from './seeders/seeders.module';
+import { CaslModule } from './casl/casl.module';
 
 @Module({
   imports: [
@@ -14,6 +15,7 @@ import { SeedersModule } from './seeders/seeders.module';
     GraphQLModule.forRootAsync<ApolloDriverConfig>(graphqlSetUp),
     DataLoaderModule,
     SeedersModule,
+    CaslModule,
   ],
 })
 export class InfrastructureModule {}

@@ -1,9 +1,10 @@
 import { Module } from '@nestjs/common';
-import { UserModule } from './user/user.module';
-import { ProfileModule } from './profile/profile.module';
-import { UserRoleModule } from './user-role/user-role.module';
-import { ArticleModule } from './article/article.module';
-import { AuthModule } from './auth/auth.module';
+import { UserModule } from './graphql/user/user.module';
+import { ProfileModule } from './graphql/profile/profile.module';
+import { UserRoleModule } from './graphql/user-role/user-role.module';
+import { ArticleModule } from './graphql/article/article.module';
+import { AuthModule } from './graphql/auth/auth.module';
+import { ReportsModule } from './rest/reports/reports.module';
 
 @Module({
   imports: [
@@ -12,6 +13,7 @@ import { AuthModule } from './auth/auth.module';
     UserRoleModule,
     ArticleModule,
     AuthModule,
+    ReportsModule,
   ],
 })
 export class ApiModule {}
