@@ -14,7 +14,10 @@ import { UserDataLoader } from 'src/infrastructure/data-loader/user.data-loader'
 import { User } from '../user/models/user.model';
 import { Public } from '../auth/decorators/public.decorator';
 import { CheckPolicies } from 'src/infrastructure/casl/decorators/check-policies.decorator';
-import { UpdateArticlePolicyHandler } from 'src/infrastructure/casl/policy-handlers/update-article.policy-handler';
+import { CurrentUser } from '../auth/decorators/current-user.decorator';
+import { UpdateArticlePolicyHandler } from 'src/infrastructure/casl/policy-handlers';
+import { CreateArticlePolicyHandler } from 'src/infrastructure/casl/policy-handlers';
+import { DeleteArticlePolicyHandler } from 'src/infrastructure/casl/policy-handlers';
 
 @Resolver(() => Article)
 export class ArticleResolver {
@@ -23,8 +26,7 @@ export class ArticleResolver {
     private readonly userDataLoader: UserDataLoader,
   ) {}
 
-  // @Public()
-  @CheckPolicies(new UpdateArticlePolicyHandler())
+  @Public()
   @Query(() => [Article])
   async getArticles() {
     return this.articleService.getArticles();
@@ -36,14 +38,16 @@ export class ArticleResolver {
     return this.articleService.getArticle(id);
   }
 
+  @CheckPolicies(new CreateArticlePolicyHandler())
   @Mutation(() => Article)
   async createArticle(
-    @Args('userId') userId: string,
+    @CurrentUser('id') id: string,
     @Args('data') data: CreateArticleInput,
   ) {
-    return await this.articleService.createArticle(userId, data);
+    return await this.articleService.createArticle(id, data);
   }
 
+  @CheckPolicies(new UpdateArticlePolicyHandler())
   @Mutation(() => Article)
   async updateArticle(
     @Args('id') id: string,
@@ -52,6 +56,7 @@ export class ArticleResolver {
     return await this.articleService.updateArticle(id, data);
   }
 
+  @CheckPolicies(new DeleteArticlePolicyHandler())
   @Mutation(() => Article)
   async deleteArticle(@Args('id') id: string) {
     return this.articleService.deleteArticle(id);

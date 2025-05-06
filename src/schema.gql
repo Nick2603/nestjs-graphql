@@ -54,8 +54,8 @@ interface IEntityGraphql {
 type Mutation {
   addManagedGenres(genres: [String!]!, id: String!): UserRole!
   assignUserRole(roleId: String!, userId: String!): UserRole!
-  createArticle(data: CreateArticleInput!, userId: String!): Article!
-  createProfile(data: CreateProfileInput!, userId: String!): Profile!
+  createArticle(data: CreateArticleInput!): Article!
+  createProfile(data: CreateProfileInput!): Profile!
   createUser(data: CreateUserInput!): User!
   createUserRole(data: CreateUserRoleInput!): UserRole!
   deleteArticle(id: String!): Article!
@@ -68,7 +68,7 @@ type Mutation {
   removeManagedGenres(genres: [String!]!, id: String!): UserRole!
   unassignUserRole(roleId: String!, userId: String!): UserRole!
   updateArticle(data: UpdateArticleInput!, id: String!): Article!
-  updateProfile(data: UpdateProfileInput!, userId: String!): Profile!
+  updateProfile(data: UpdateProfileInput!): Profile!
   updateUser(data: UpdateUserInput!, id: String!): User!
 }
 

@@ -13,6 +13,7 @@ import { CreateProfileInput } from './dto/create-profile.input';
 import { User } from '../user/models/user.model';
 import { UserDataLoader } from 'src/infrastructure/data-loader/user.data-loader';
 import { Public } from '../auth/decorators/public.decorator';
+import { CurrentUser } from '../auth/decorators/current-user.decorator';
 
 @Resolver(() => Profile)
 export class ProfileResolver {
@@ -35,18 +36,18 @@ export class ProfileResolver {
 
   @Mutation(() => Profile)
   async createProfile(
-    @Args('userId') userId: string,
+    @CurrentUser('id') id: string,
     @Args('data') data: CreateProfileInput,
   ) {
-    return await this.profileService.createProfile(userId, data);
+    return await this.profileService.createProfile(id, data);
   }
 
   @Mutation(() => Profile)
   async updateProfile(
-    @Args('userId') userId: string,
+    @CurrentUser('id') id: string,
     @Args('data') data: UpdateProfileInput,
   ) {
-    return await this.profileService.updateProfile(userId, data);
+    return await this.profileService.updateProfile(id, data);
   }
 
   @ResolveField('user', () => User, { nullable: true })

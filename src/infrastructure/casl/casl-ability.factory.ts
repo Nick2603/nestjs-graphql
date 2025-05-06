@@ -11,13 +11,11 @@ import { Action } from './action.enum';
 import { Article } from 'src/api/graphql/article/models/article.model';
 import { UserRole } from 'src/api/graphql/user-role/models/user-role.model';
 import { RoleEnum } from 'prisma/generated/prisma';
-import { Profile } from 'src/api/graphql/profile/models/profile.model';
 import type { UserWithRoles } from 'src/api/graphql/user/interfaces/user-with-roles.interface';
+import type { RoleManager } from 'src/common/db/user-role.interface';
 
 type Subjects =
-  | InferSubjects<
-      (typeof User & { roles: UserRole }) | typeof Article | typeof Profile
-    >
+  | InferSubjects<(typeof User & { roles: UserRole }) | typeof Article>
   | 'all';
 
 export type AppAbility = MongoAbility<[Action, Subjects]>;
@@ -32,6 +30,22 @@ export class CaslAbilityFactory {
     cannot(Action.Manage, 'all');
 
     can(Action.Read, 'all');
+
+    if (user?.roles.some((role) => role.title === RoleEnum.USER)) {
+      can(Action.Create, Article);
+
+      can([Action.Update, Action.Delete], Article, { authorId: user.id });
+    }
+
+    if (user?.roles.some((role) => role.title === RoleEnum.MANAGER)) {
+      can([Action.Update, Action.Delete], Article, {
+        genres: {
+          $in: user?.roles?.find(
+            (role): role is RoleManager => role.title === RoleEnum.MANAGER,
+          )?.managedGenres,
+        },
+      });
+    }
 
     if (user?.roles.some((role) => role.title === RoleEnum.ADMIN)) {
       can([Action.Update, Action.Delete], Article);
