@@ -8,7 +8,6 @@ import { DataLoaderModule } from 'src/infrastructure/data-loader/data-loader.mod
 
 @Module({
   imports: [PrismaModule, DataLoaderModule],
-
   providers: [
     ArticleResolver,
     ArticleService,

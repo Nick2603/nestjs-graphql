@@ -1,14 +1,14 @@
-FROM node:23.11-slim
+FROM node:24.0-slim
+
+RUN apt-get update -y && apt-get install -y openssl
 
 WORKDIR /app
 
 COPY package*.json ./
 
-RUN npm ci
-
 COPY . .
 
-RUN apt-get update -y && apt-get install -y openssl
+RUN npm ci
 
 RUN npx prisma generate
 
