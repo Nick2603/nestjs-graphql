@@ -7,4 +7,5 @@ export default registerAs('configuration', () => ({
   databaseUrl: process.env.DB_URL as string,
   corsOrigin: process.env.CORS_ORIGIN as string,
   jwtSecret: process.env.JWT_SECRET as string,
+  redisUrl: process.env.REDIS_URL as string,
 }));

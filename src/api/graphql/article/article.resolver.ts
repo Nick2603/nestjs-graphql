@@ -26,13 +26,13 @@ export class ArticleResolver {
   @Public()
   @Query(() => [Article])
   async getArticles() {
-    return this.articleService.getArticles();
+    return this.articleService.getArticlesCached();
   }
 
   @Public()
   @Query(() => Article)
   async getArticle(@Args('id') id: string) {
-    return this.articleService.getArticle(id);
+    return this.articleService.getArticleCached(id);
   }
 
   @Mutation(() => Article)

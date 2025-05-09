@@ -29,4 +29,8 @@ export class AppConfigService {
   get jwtSecret(): string {
     return this.config.jwtSecret;
   }
+
+  get redisUrl(): string {
+    return this.config.redisUrl;
+  }
 }

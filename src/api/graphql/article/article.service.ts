@@ -10,20 +10,50 @@ import {
   canDeleteArticle,
   canUpdateArticle,
 } from 'src/infrastructure/casl';
+import { AppCacheService } from 'src/infrastructure/cache/app-cache.service';
 
 @Injectable()
 export class ArticleService {
+  private readonly cacheKey: string = 'articles';
+
+  private readonly cacheTtl: number = 36_000;
+
   constructor(
     private readonly articleRepository: ArticleRepository,
     private readonly articleQueryRepository: ArticleQueryRepository,
+    private readonly appCacheService: AppCacheService,
   ) {}
 
-  async getArticles(): Promise<Article[]> {
-    return await this.articleQueryRepository.getArticles();
+  async getArticlesCached(): Promise<Article[]> {
+    const cachedArticles = await this.appCacheService.get<Article[]>(
+      this.cacheKey,
+    );
+
+    if (cachedArticles) return cachedArticles;
+
+    const articles = await this.articleQueryRepository.getArticles();
+
+    await this.appCacheService.set(this.cacheKey, articles, this.cacheTtl);
+
+    return articles;
   }
 
   async getArticle(id: string): Promise<Article> {
     return await this.articleQueryRepository.getArticle(id);
+  }
+
+  async getArticleCached(id: string): Promise<Article> {
+    const cacheKeyById = `this.cacheKey:${id}`;
+
+    const cachedArticle = await this.appCacheService.get<Article>(cacheKeyById);
+
+    if (cachedArticle) return cachedArticle;
+
+    const article = await this.articleQueryRepository.getArticle(id);
+
+    await this.appCacheService.set(cacheKeyById, article, this.cacheTtl);
+
+    return article;
   }
 
   async createArticle(
@@ -33,7 +63,7 @@ export class ArticleService {
   ): Promise<Article> {
     canCreateArticle(user);
 
-    return this.articleRepository.createArticle(userId, data);
+    return await this.articleRepository.createArticle(userId, data);
   }
 
   async updateArticle(
@@ -47,7 +77,7 @@ export class ArticleService {
 
     canUpdateArticle(user, article);
 
-    return this.articleRepository.updateArticle(article.id, data);
+    return await this.articleRepository.updateArticle(article.id, data);
   }
 
   async deleteArticle(id: string, user: UserWithRoles): Promise<Article> {
