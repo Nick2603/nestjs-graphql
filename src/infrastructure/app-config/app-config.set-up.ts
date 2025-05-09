@@ -3,7 +3,7 @@ import configuration from './configuration';
 import { validationOptions, validationSchema } from './validation';
 
 export const appConfigSetUp: ConfigModuleOptions = {
-  envFilePath: ['.env.development'],
+  envFilePath: ['.env'],
   cache: true,
   expandVariables: true,
   isGlobal: false,

@@ -18,11 +18,11 @@
     "test:cov": "jest --coverage",
     "test:debug": "node --inspect-brk -r tsconfig-paths/register -r ts-node/register node_modules/.bin/jest --runInBand",
     "test:e2e": "jest --config ./test/jest-e2e.json",
-    "prisma:generate": "dotenv -e .env.development -- npx prisma generate",
-    "prisma:migrate": "dotenv -e .env.development -- npx prisma migrate dev",
-    "prisma:studio": "dotenv -e .env.development -- npx prisma studio",
-    "docker:up": "docker-compose --env-file .env.development up --build -d",
-    "docker:down": "docker compose --env-file .env.development down"
+    "prisma:generate": "npx prisma generate",
+    "prisma:migrate": "npx prisma migrate dev",
+    "prisma:studio": "npx prisma studio",
+    "docker:up": "docker-compose up --build -d",
+    "docker:down": "docker compose down"
   },
   "dependencies": {
     "@apollo/server": "^4.12.0",
