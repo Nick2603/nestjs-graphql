@@ -13,11 +13,8 @@ import { UpdateArticleInput } from './dto/update-article.input';
 import { UserDataLoader } from 'src/infrastructure/data-loader/user.data-loader';
 import { User } from '../user/models/user.model';
 import { Public } from '../auth/decorators/public.decorator';
-import { CheckPolicies } from 'src/infrastructure/casl/decorators/check-policies.decorator';
 import { CurrentUser } from '../auth/decorators/current-user.decorator';
-import { UpdateArticlePolicyHandler } from 'src/infrastructure/casl/policy-handlers';
-import { CreateArticlePolicyHandler } from 'src/infrastructure/casl/policy-handlers';
-import { DeleteArticlePolicyHandler } from 'src/infrastructure/casl/policy-handlers';
+import type { UserWithRoles } from '../user/interfaces/user-with-roles.interface';
 
 @Resolver(() => Article)
 export class ArticleResolver {
@@ -38,28 +35,30 @@ export class ArticleResolver {
     return this.articleService.getArticle(id);
   }
 
-  @CheckPolicies(new CreateArticlePolicyHandler())
   @Mutation(() => Article)
   async createArticle(
     @CurrentUser('id') id: string,
     @Args('data') data: CreateArticleInput,
+    @CurrentUser() user: UserWithRoles,
   ) {
-    return await this.articleService.createArticle(id, data);
+    return await this.articleService.createArticle(id, data, user);
   }
 
-  @CheckPolicies(new UpdateArticlePolicyHandler())
   @Mutation(() => Article)
   async updateArticle(
     @Args('id') id: string,
     @Args('data') data: UpdateArticleInput,
+    @CurrentUser() user: UserWithRoles,
   ) {
-    return await this.articleService.updateArticle(id, data);
+    return await this.articleService.updateArticle(id, data, user);
   }
 
-  @CheckPolicies(new DeleteArticlePolicyHandler())
   @Mutation(() => Article)
-  async deleteArticle(@Args('id') id: string) {
-    return this.articleService.deleteArticle(id);
+  async deleteArticle(
+    @Args('id') id: string,
+    @CurrentUser() user: UserWithRoles,
+  ) {
+    return this.articleService.deleteArticle(id, user);
   }
 
   @ResolveField('author', () => User, { nullable: true })
