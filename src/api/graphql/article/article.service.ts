@@ -12,6 +12,15 @@ import {
 } from 'src/infrastructure/casl';
 import { AppCacheService } from 'src/infrastructure/cache/app-cache.service';
 import { CACHE_KEYS, getCachedKeyById } from 'src/infrastructure/casl';
+import { AppEventemitterService } from 'src/infrastructure/eventemitter/app-eventemitter.service';
+import {
+  ArticleCreated,
+  articleCreatedEventKey,
+  ArticleUpdated,
+  articleUpdatedEventKey,
+  ArticleDeleted,
+  articleDeletedEventKey,
+} from 'src/infrastructure/eventemitter/events';
 
 @Injectable()
 export class ArticleService {
@@ -21,6 +30,7 @@ export class ArticleService {
     private readonly articleRepository: ArticleRepository,
     private readonly articleQueryRepository: ArticleQueryRepository,
     private readonly appCacheService: AppCacheService,
+    private readonly appEventemitterService: AppEventemitterService,
   ) {}
 
   async getArticlesCached(): Promise<Article[]> {
@@ -66,7 +76,14 @@ export class ArticleService {
   ): Promise<Article> {
     canCreateArticle(user);
 
-    return await this.articleRepository.createArticle(userId, data);
+    const article = await this.articleRepository.createArticle(userId, data);
+
+    await this.appEventemitterService.emitEvent(
+      articleCreatedEventKey,
+      new ArticleCreated(article.id, article.text, article.genres),
+    );
+
+    return article;
   }
 
   async updateArticle(
@@ -80,7 +97,23 @@ export class ArticleService {
 
     canUpdateArticle(user, article);
 
-    return await this.articleRepository.updateArticle(article.id, data);
+    const updatedArticle = await this.articleRepository.updateArticle(
+      article.id,
+      data,
+    );
+
+    if (data.text?.length || data.genres?.length) {
+      await this.appEventemitterService.emitEvent(
+        articleUpdatedEventKey,
+        new ArticleUpdated(
+          updatedArticle.id,
+          updatedArticle.text,
+          updatedArticle.genres,
+        ),
+      );
+    }
+
+    return updatedArticle;
   }
 
   async deleteArticle(id: string, user: UserWithRoles): Promise<Article> {
@@ -88,6 +121,14 @@ export class ArticleService {
 
     canDeleteArticle(user, article);
 
-    return await this.articleRepository.deleteArticleWithCleanup(id);
+    const deletedArticle =
+      await this.articleRepository.deleteArticleWithCleanup(id);
+
+    await this.appEventemitterService.emitEvent(
+      articleDeletedEventKey,
+      new ArticleDeleted(deletedArticle.id),
+    );
+
+    return deletedArticle;
   }
 }

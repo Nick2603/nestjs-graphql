@@ -8,6 +8,7 @@ export const validationSchema: Joi.ObjectSchema = Joi.object({
   CORS_ORIGIN: Joi.string(),
   JWT_SECRET: Joi.string(),
   REDIS_URL: Joi.string().uri(),
+  ES_URL: Joi.string().uri(),
 });
 
 export const validationOptions: Joi.ValidationOptions = {

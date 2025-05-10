@@ -7,6 +7,8 @@ import { ApolloDriverConfig } from '@nestjs/apollo';
 import { DataLoaderModule } from './data-loader/data-loader.module';
 import { SeedersModule } from './seeders/seeders.module';
 import { AppCacheModule } from './cache/app-cache.module';
+import { AppElasticsearchModule } from './elasticsearch/app-elasticsearch.module';
+import { AppEventemitterModule } from './eventemitter/app-eventemitter.module';
 
 @Module({
   imports: [
@@ -16,6 +18,8 @@ import { AppCacheModule } from './cache/app-cache.module';
     DataLoaderModule,
     SeedersModule,
     AppCacheModule,
+    AppElasticsearchModule,
+    AppEventemitterModule,
   ],
 })
 export class InfrastructureModule {}

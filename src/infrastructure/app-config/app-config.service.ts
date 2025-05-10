@@ -33,4 +33,8 @@ export class AppConfigService {
   get redisUrl(): string {
     return this.config.redisUrl;
   }
+
+  get esUrl(): string {
+    return this.config.esUrl;
+  }
 }
