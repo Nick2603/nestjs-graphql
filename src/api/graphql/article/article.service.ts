@@ -11,12 +11,11 @@ import {
   canUpdateArticle,
 } from 'src/infrastructure/casl';
 import { AppCacheService } from 'src/infrastructure/cache/app-cache.service';
+import { CACHE_KEYS, getCachedKeyById } from 'src/infrastructure/casl';
 
 @Injectable()
 export class ArticleService {
-  private readonly cacheKey: string = 'articles';
-
-  private readonly cacheTtl: number = 36_000;
+  private readonly cacheTtl: number = 60_000;
 
   constructor(
     private readonly articleRepository: ArticleRepository,
@@ -26,14 +25,18 @@ export class ArticleService {
 
   async getArticlesCached(): Promise<Article[]> {
     const cachedArticles = await this.appCacheService.get<Article[]>(
-      this.cacheKey,
+      CACHE_KEYS.ARTICLES,
     );
 
     if (cachedArticles) return cachedArticles;
 
     const articles = await this.articleQueryRepository.getArticles();
 
-    await this.appCacheService.set(this.cacheKey, articles, this.cacheTtl);
+    await this.appCacheService.set(
+      CACHE_KEYS.ARTICLES,
+      articles,
+      this.cacheTtl,
+    );
 
     return articles;
   }
@@ -43,7 +46,7 @@ export class ArticleService {
   }
 
   async getArticleCached(id: string): Promise<Article> {
-    const cacheKeyById = `this.cacheKey:${id}`;
+    const cacheKeyById = getCachedKeyById(id, CACHE_KEYS.ARTICLES);
 
     const cachedArticle = await this.appCacheService.get<Article>(cacheKeyById);
 

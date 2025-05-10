@@ -5,20 +5,54 @@ import type { CreateUserRoleInput } from './dto/create-user-role.input';
 import { RoleEnum } from 'prisma/generated/prisma';
 import { sanitizeGenres } from 'src/common/utils/sanitize-genres';
 import type { DBUserRole } from 'src/common/db/user-role.interface';
+import { AppCacheService } from 'src/infrastructure/cache/app-cache.service';
+import { CACHE_KEYS, getCachedKeyById } from 'src/infrastructure/casl';
 
 @Injectable()
 export class UserRoleService {
+  private readonly cacheTtl: number = 60_000;
+
   constructor(
     private readonly userRoleQueryRepository: UserRoleQueryRepository,
     private readonly userRoleRepository: UserRoleRepository,
+    private readonly appCacheService: AppCacheService,
   ) {}
 
-  async getUserRoles(): Promise<DBUserRole[]> {
-    return await this.userRoleQueryRepository.getUserRoles();
+  async getUserRolesCached(): Promise<DBUserRole[]> {
+    const cachedUserRoles = await this.appCacheService.get<DBUserRole[]>(
+      CACHE_KEYS.USER_ROLES,
+    );
+
+    if (cachedUserRoles) return cachedUserRoles;
+
+    const userRoles = await this.userRoleQueryRepository.getUserRoles();
+
+    await this.appCacheService.set(
+      CACHE_KEYS.USER_ROLES,
+      userRoles,
+      this.cacheTtl,
+    );
+
+    return userRoles;
   }
 
   async getUserRole(id: string): Promise<DBUserRole> {
     return await this.userRoleQueryRepository.getUserRole(id);
+  }
+
+  async getUserRoleCached(id: string): Promise<DBUserRole> {
+    const cacheKeyById = getCachedKeyById(id, CACHE_KEYS.USER_ROLES);
+
+    const cachedUserRole =
+      await this.appCacheService.get<DBUserRole>(cacheKeyById);
+
+    if (cachedUserRole) return cachedUserRole;
+
+    const userRole = await this.userRoleQueryRepository.getUserRole(id);
+
+    await this.appCacheService.set(cacheKeyById, userRole, this.cacheTtl);
+
+    return userRole;
   }
 
   async createUserRole(data: CreateUserRoleInput): Promise<DBUserRole> {

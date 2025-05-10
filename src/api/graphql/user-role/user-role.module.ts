@@ -5,9 +5,10 @@ import { UserRoleQueryRepository } from './user-role.query-repository';
 import { UserRoleRepository } from './user-role.repository';
 import { PrismaModule } from 'src/infrastructure/prisma/prisma.module';
 import { DataLoaderModule } from 'src/infrastructure/data-loader/data-loader.module';
+import { AppCacheModule } from 'src/infrastructure/cache/app-cache.module';
 
 @Module({
-  imports: [PrismaModule, DataLoaderModule],
+  imports: [PrismaModule, DataLoaderModule, AppCacheModule],
   providers: [
     UserRoleResolver,
     UserRoleService,

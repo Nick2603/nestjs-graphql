@@ -34,13 +34,13 @@ export class UserResolver {
   @Public()
   @Query(() => [User])
   async getUsers() {
-    return this.userService.getUsers();
+    return this.userService.getUsersCached();
   }
 
   @Public()
   @Query(() => User)
   async getUser(@Args('id') id: string) {
-    return this.userService.getUser(id);
+    return this.userService.getUserCached(id);
   }
 
   @Query(() => User)

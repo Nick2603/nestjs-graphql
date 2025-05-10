@@ -25,13 +25,13 @@ export class ProfileResolver {
   @Public()
   @Query(() => [Profile])
   async getProfiles() {
-    return this.profileService.getProfiles();
+    return this.profileService.getProfilesCached();
   }
 
   @Public()
   @Query(() => Profile)
   async getProfile(@Args('userId') userId: string) {
-    return this.profileService.getProfile(userId);
+    return this.profileService.getProfileCached(userId);
   }
 
   @Mutation(() => Profile)

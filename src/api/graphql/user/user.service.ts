@@ -6,20 +6,49 @@ import type { UpdateUserInput } from './dto/update-user.input';
 import type { CreateUserInput } from './dto/create-user.input';
 import { hashPassword } from 'src/common/utils/hash';
 import type { UserWithRoles } from './interfaces/user-with-roles.interface';
+import { AppCacheService } from 'src/infrastructure/cache/app-cache.service';
+import { CACHE_KEYS, getCachedKeyById } from 'src/infrastructure/casl';
 
 @Injectable()
 export class UserService {
+  private readonly cacheTtl: number = 60_000;
+
   constructor(
     private readonly userQueryRepository: UserQueryRepository,
     private readonly userRepository: UserRepository,
+    private readonly appCacheService: AppCacheService,
   ) {}
 
-  async getUsers(): Promise<User[]> {
-    return await this.userQueryRepository.getUsers();
+  async getUsersCached(): Promise<User[]> {
+    const cachedUsers = await this.appCacheService.get<User[]>(
+      CACHE_KEYS.USERS,
+    );
+
+    if (cachedUsers) return cachedUsers;
+
+    const users = await this.userQueryRepository.getUsers();
+
+    await this.appCacheService.set(CACHE_KEYS.USERS, users, this.cacheTtl);
+
+    return users;
   }
 
   async getUser(id: string): Promise<User> {
     return await this.userQueryRepository.getUser(id);
+  }
+
+  async getUserCached(id: string): Promise<User> {
+    const cacheKeyById = getCachedKeyById(id, CACHE_KEYS.USERS);
+
+    const cachedUser = await this.appCacheService.get<User>(cacheKeyById);
+
+    if (cachedUser) return cachedUser;
+
+    const user = await this.userQueryRepository.getUser(id);
+
+    await this.appCacheService.set(cacheKeyById, user, this.cacheTtl);
+
+    return user;
   }
 
   async getUserWithRoles(id: string): Promise<UserWithRoles> {
