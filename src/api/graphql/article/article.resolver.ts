@@ -25,8 +25,12 @@ export class ArticleResolver {
 
   @Public()
   @Query(() => [Article])
-  async getArticles() {
-    return this.articleService.getArticlesCached();
+  async getArticles(
+    @Args('textContent', { nullable: true }) textContent?: string,
+  ) {
+    return textContent
+      ? this.articleService.getArticlesByTextContent(textContent)
+      : this.articleService.getArticlesCached();
   }
 
   @Public()

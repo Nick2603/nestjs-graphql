@@ -83,7 +83,7 @@ type Profile implements IEntityGraphql {
 
 type Query {
   getArticle(id: String!): Article!
-  getArticles: [Article!]!
+  getArticles(textContent: String): [Article!]!
   getMe: User!
   getProfile(userId: String!): Profile!
   getProfiles: [Profile!]!

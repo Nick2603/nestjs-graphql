@@ -2,12 +2,20 @@ import { Injectable, NotFoundException } from '@nestjs/common';
 import type { Article } from 'prisma/generated/prisma';
 import { PrismaService } from 'src/infrastructure/prisma/prisma.service';
 
+interface articleSearchParams {
+  ids?: string[];
+}
+
 @Injectable()
 export class ArticleQueryRepository {
   constructor(private readonly prisma: PrismaService) {}
 
-  async getArticles(): Promise<Article[]> {
-    return await this.prisma.article.findMany();
+  async getArticles(params?: articleSearchParams): Promise<Article[]> {
+    const where = { ...(params?.ids?.length && { id: { in: params.ids } }) };
+
+    return await this.prisma.article.findMany({
+      where,
+    });
   }
 
   /**

@@ -45,7 +45,7 @@ services:
       - my_network
   
   # redisinsight:
-  #   image: redis/redisinsight:latest
+  #   image: redis/redisinsight:2.68.0
   #   container_name: redisinsight
   #   restart: always
   #   ports:
@@ -55,10 +55,12 @@ services:
   #   env_file:
   #     - .env
   #   environment:
-  #     - REDIS_HOST=redis
-  #     - REDIS_PORT=${REDIS_PORT}
+  #     - RI_REDIS_HOST=redis
+  #     - RI_REDIS_PORT=${REDIS_PORT}
   #   depends_on:
   #     - redis
+  #   volumes:
+  #   - redis-insight:/data
 
   es01:
     image: docker.elastic.co/elasticsearch/elasticsearch:9.0.1
@@ -148,6 +150,7 @@ services:
 
 volumes:
   postgres_data:
+  redis-insight:
   es01_data:
     driver: local
   es02_data:

@@ -7,6 +7,7 @@ import { PrismaModule } from 'src/infrastructure/prisma/prisma.module';
 import { DataLoaderModule } from 'src/infrastructure/data-loader/data-loader.module';
 import { AppCacheModule } from 'src/infrastructure/cache/app-cache.module';
 import { AppEventemitterModule } from 'src/infrastructure/eventemitter/app-eventemitter.module';
+import { AppElasticsearchModule } from 'src/infrastructure/elasticsearch/app-elasticsearch.module';
 
 @Module({
   imports: [
@@ -14,6 +15,7 @@ import { AppEventemitterModule } from 'src/infrastructure/eventemitter/app-event
     DataLoaderModule,
     AppCacheModule,
     AppEventemitterModule,
+    AppElasticsearchModule,
   ],
   providers: [
     ArticleResolver,

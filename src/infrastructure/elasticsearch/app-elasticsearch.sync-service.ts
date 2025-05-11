@@ -1,3 +1,4 @@
+import { ELASTICSEARCH_INDEXES } from './elasticsearch.indexes';
 import { Injectable } from '@nestjs/common';
 import { AppElasticsearchService } from './app-elasticsearch.service';
 import { OnEvent } from '@nestjs/event-emitter';
@@ -12,8 +13,6 @@ import {
 
 @Injectable()
 export class AppElasticsearchSyncService {
-  private readonly index: string = 'article';
-
   constructor(
     private readonly appElasticsearchService: AppElasticsearchService,
   ) {}
@@ -21,18 +20,40 @@ export class AppElasticsearchSyncService {
   @OnEvent(articleCreatedEventKey, { async: true })
   async handleArticleCreatedEvent({
     id,
-    ...rest
+    text,
+    genres,
   }: ArticleCreated): Promise<void> {
-    await this.appElasticsearchService.createDocument(this.index, id, rest);
+    await this.appElasticsearchService.createDocument(
+      ELASTICSEARCH_INDEXES.ARTICLE,
+      id,
+      {
+        text,
+        genres,
+      },
+    );
   }
 
   @OnEvent(articleUpdatedEventKey, { async: true })
-  async handleArticleUpdatedEvent(payload: ArticleUpdated): Promise<void> {
-    console.log(payload);
+  async handleArticleUpdatedEvent({
+    id,
+    text,
+    genres,
+  }: ArticleUpdated): Promise<void> {
+    await this.appElasticsearchService.updateDocument(
+      ELASTICSEARCH_INDEXES.ARTICLE,
+      id,
+      {
+        text,
+        genres,
+      },
+    );
   }
 
   @OnEvent(articleDeletedEventKey, { async: true })
-  async handleArticleDeletedEvent(payload: ArticleDeleted): Promise<void> {
-    console.log(payload);
+  async handleArticleDeletedEvent({ id }: ArticleDeleted): Promise<void> {
+    await this.appElasticsearchService.deleteDocument(
+      ELASTICSEARCH_INDEXES.ARTICLE,
+      id,
+    );
   }
 }

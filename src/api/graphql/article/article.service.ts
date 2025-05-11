@@ -21,6 +21,8 @@ import {
   ArticleDeleted,
   articleDeletedEventKey,
 } from 'src/infrastructure/eventemitter/events';
+import { AppElasticsearchService } from 'src/infrastructure/elasticsearch/app-elasticsearch.service';
+import { ELASTICSEARCH_INDEXES } from 'src/infrastructure/elasticsearch/elasticsearch.indexes';
 
 @Injectable()
 export class ArticleService {
@@ -31,6 +33,7 @@ export class ArticleService {
     private readonly articleQueryRepository: ArticleQueryRepository,
     private readonly appCacheService: AppCacheService,
     private readonly appEventemitterService: AppEventemitterService,
+    private readonly appElasticsearchService: AppElasticsearchService,
   ) {}
 
   async getArticlesCached(): Promise<Article[]> {
@@ -49,6 +52,20 @@ export class ArticleService {
     );
 
     return articles;
+  }
+
+  async getArticlesByTextContent(textContent: string): Promise<Article[]> {
+    const articles = await this.appElasticsearchService.getDocuments<
+      Pick<Article, 'genres' | 'text'>
+    >(ELASTICSEARCH_INDEXES.ARTICLE, {
+      text: textContent,
+    });
+
+    const ids = articles.map((article) => article._id);
+
+    return ids.length
+      ? await this.articleQueryRepository.getArticles({ ids })
+      : [];
   }
 
   async getArticle(id: string): Promise<Article> {
@@ -80,7 +97,7 @@ export class ArticleService {
 
     await this.appEventemitterService.emitEvent(
       articleCreatedEventKey,
-      new ArticleCreated(article.id, article.text, article.genres),
+      new ArticleCreated(article),
     );
 
     return article;
@@ -102,16 +119,10 @@ export class ArticleService {
       data,
     );
 
-    if (data.text?.length || data.genres?.length) {
-      await this.appEventemitterService.emitEvent(
-        articleUpdatedEventKey,
-        new ArticleUpdated(
-          updatedArticle.id,
-          updatedArticle.text,
-          updatedArticle.genres,
-        ),
-      );
-    }
+    await this.appEventemitterService.emitEvent(
+      articleUpdatedEventKey,
+      new ArticleUpdated(updatedArticle),
+    );
 
     return updatedArticle;
   }

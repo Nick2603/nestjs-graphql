@@ -1,4 +1,5 @@
 import type {
+  Id,
   QueryDslQueryContainer,
   Result,
 } from '@elastic/elasticsearch/lib/api/types';
@@ -12,7 +13,7 @@ export class AppElasticsearchService {
   async getDocuments<T>(
     index: string,
     match: QueryDslQueryContainer['match'],
-  ): Promise<T[]> {
+  ): Promise<(T & { _id: Id })[]> {
     return await this.elasticsearchService.helpers.search<T>({
       index,
       query: {
