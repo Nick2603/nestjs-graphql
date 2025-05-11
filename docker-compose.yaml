@@ -20,7 +20,8 @@ services:
   #   image: node:lts-alpine3.17
   #   working_dir: /usr/src/app
   #   volumes:
-  #     - .:/usr/src/app
+  #     - ./prisma:/usr/src/app/prisma
+  #     - ./package.json:/usr/src/app/package.json
   #   command: npx prisma studio --port 5555 --browser none
   #   env_file:
   #     - .env
@@ -28,9 +29,8 @@ services:
   #     - "5555:5555"
   #   networks:
   #     - my_network
-    # depends_on:
-    #   - postgres
-    #   - redis
+  #   depends_on:
+  #     - postgres
 
 
   redis:
@@ -59,8 +59,6 @@ services:
   #     - RI_REDIS_PORT=${REDIS_PORT}
   #   depends_on:
   #     - redis
-  #   volumes:
-  #   - redis-insight:/data
 
   es01:
     image: docker.elastic.co/elasticsearch/elasticsearch:9.0.1
@@ -150,7 +148,6 @@ services:
 
 volumes:
   postgres_data:
-  redis-insight:
   es01_data:
     driver: local
   es02_data:
