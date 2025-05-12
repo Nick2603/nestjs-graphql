@@ -1,7 +1,5 @@
 import type { Article } from 'prisma/generated/prisma';
 
-export const articleCreatedEventKey = 'article.created' as const;
-
 export class ArticleCreated implements Article {
   readonly id: string;
   readonly text: string;

@@ -1,12 +1,4 @@
-export {
-  articleCreatedEventKey,
-  ArticleCreated,
-} from './article-created.event';
-export {
-  articleUpdatedEventKey,
-  ArticleUpdated,
-} from './article-updated.event';
-export {
-  articleDeletedEventKey,
-  ArticleDeleted,
-} from './article-deleted.event';
+export { ArticleCreated } from './article-created.event';
+export { ArticleUpdated } from './article-updated.event';
+export { ArticleDeleted } from './article-deleted.event';
+export { EVENTS_KEYS } from './events-keys';

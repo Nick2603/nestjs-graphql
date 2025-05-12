@@ -1,23 +1,34 @@
 import { ELASTICSEARCH_INDEXES } from './elasticsearch.indexes';
-import { Injectable } from '@nestjs/common';
+import { Injectable, OnModuleInit } from '@nestjs/common';
 import { AppElasticsearchService } from './app-elasticsearch.service';
 import { OnEvent } from '@nestjs/event-emitter';
 import {
   ArticleCreated,
-  articleCreatedEventKey,
   ArticleDeleted,
-  articleDeletedEventKey,
   ArticleUpdated,
-  articleUpdatedEventKey,
+  EVENTS_KEYS,
 } from '../eventemitter/events';
 
 @Injectable()
-export class AppElasticsearchSyncService {
+export class AppElasticsearchSyncService implements OnModuleInit {
   constructor(
     private readonly appElasticsearchService: AppElasticsearchService,
   ) {}
 
-  @OnEvent(articleCreatedEventKey, { async: true })
+  async onModuleInit(): Promise<void> {
+    for (const index of Object.values(ELASTICSEARCH_INDEXES)) {
+      const exists =
+        await this.appElasticsearchService.checkIndicesExists(index);
+
+      if (!exists) {
+        await this.appElasticsearchService.createIndices(index);
+
+        console.log(`Index "${index}" created`);
+      }
+    }
+  }
+
+  @OnEvent(EVENTS_KEYS.ARTICLE_CREATED, { async: true })
   async handleArticleCreatedEvent({
     id,
     text,
@@ -33,7 +44,7 @@ export class AppElasticsearchSyncService {
     );
   }
 
-  @OnEvent(articleUpdatedEventKey, { async: true })
+  @OnEvent(EVENTS_KEYS.ARTICLE_UPDATED, { async: true })
   async handleArticleUpdatedEvent({
     id,
     text,
@@ -49,7 +60,7 @@ export class AppElasticsearchSyncService {
     );
   }
 
-  @OnEvent(articleDeletedEventKey, { async: true })
+  @OnEvent(EVENTS_KEYS.ARTICLE_DELETED, { async: true })
   async handleArticleDeletedEvent({ id }: ArticleDeleted): Promise<void> {
     await this.appElasticsearchService.deleteDocument(
       ELASTICSEARCH_INDEXES.ARTICLE,

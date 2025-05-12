@@ -15,11 +15,9 @@ import { CACHE_KEYS, getCachedKeyById } from 'src/infrastructure/casl';
 import { AppEventemitterService } from 'src/infrastructure/eventemitter/app-eventemitter.service';
 import {
   ArticleCreated,
-  articleCreatedEventKey,
   ArticleUpdated,
-  articleUpdatedEventKey,
   ArticleDeleted,
-  articleDeletedEventKey,
+  EVENTS_KEYS,
 } from 'src/infrastructure/eventemitter/events';
 import { AppElasticsearchService } from 'src/infrastructure/elasticsearch/app-elasticsearch.service';
 import { ELASTICSEARCH_INDEXES } from 'src/infrastructure/elasticsearch/elasticsearch.indexes';
@@ -96,7 +94,7 @@ export class ArticleService {
     const article = await this.articleRepository.createArticle(userId, data);
 
     await this.appEventemitterService.emitEvent(
-      articleCreatedEventKey,
+      EVENTS_KEYS.ARTICLE_CREATED,
       new ArticleCreated(article),
     );
 
@@ -120,7 +118,7 @@ export class ArticleService {
     );
 
     await this.appEventemitterService.emitEvent(
-      articleUpdatedEventKey,
+      EVENTS_KEYS.ARTICLE_UPDATED,
       new ArticleUpdated(updatedArticle),
     );
 
@@ -136,7 +134,7 @@ export class ArticleService {
       await this.articleRepository.deleteArticleWithCleanup(id);
 
     await this.appEventemitterService.emitEvent(
-      articleDeletedEventKey,
+      EVENTS_KEYS.ARTICLE_DELETED,
       new ArticleDeleted(deletedArticle.id),
     );
 

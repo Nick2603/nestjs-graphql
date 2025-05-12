@@ -52,13 +52,13 @@ services:
   #     - "8001:8001"
   #   networks:
   #     - my_network
-  #   env_file:
-  #     - .env
-  #   environment:
-  #     - RI_REDIS_HOST=redis
-  #     - RI_REDIS_PORT=${REDIS_PORT}
-  #   depends_on:
-  #     - redis
+    # env_file:
+    #   - .env
+    # environment:
+    #   - RI_REDIS_HOST=redis
+    #   - RI_REDIS_PORT=${REDIS_PORT}
+    # depends_on:
+    #   - redis
 
   es01:
     image: docker.elastic.co/elasticsearch/elasticsearch:9.0.1

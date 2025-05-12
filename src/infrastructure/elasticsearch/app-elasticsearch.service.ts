@@ -1,5 +1,6 @@
 import type {
   Id,
+  IndicesCreateResponse,
   QueryDslQueryContainer,
   Result,
 } from '@elastic/elasticsearch/lib/api/types';
@@ -59,5 +60,13 @@ export class AppElasticsearchService {
     const { result } = await this.elasticsearchService.delete({ index, id });
 
     return result;
+  }
+
+  async checkIndicesExists(index: string): Promise<boolean> {
+    return await this.elasticsearchService.indices.exists({ index });
+  }
+
+  async createIndices(index: string): Promise<IndicesCreateResponse> {
+    return await this.elasticsearchService.indices.create({ index });
   }
 }
