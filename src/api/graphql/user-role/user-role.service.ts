@@ -6,7 +6,10 @@ import { RoleEnum } from 'prisma/generated/prisma';
 import { sanitizeGenres } from 'src/common/utils/sanitize-genres';
 import type { DBUserRole } from 'src/common/db/user-role.interface';
 import { AppCacheService } from 'src/infrastructure/cache/app-cache.service';
-import { CACHE_KEYS, getCachedKeyById } from 'src/infrastructure/casl';
+import {
+  CACHE_KEYS,
+  getCachedKeyById,
+} from 'src/infrastructure/cache/cache-keys';
 
 @Injectable()
 export class UserRoleService {

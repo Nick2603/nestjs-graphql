@@ -6,7 +6,10 @@ import type { UpdateProfileInput } from './dto/update-profile.input';
 import type { CreateProfileInput } from './dto/create-profile.input';
 import { UserQueryRepository } from '../user/user.query-repository';
 import { AppCacheService } from 'src/infrastructure/cache/app-cache.service';
-import { CACHE_KEYS, getCachedKeyById } from 'src/infrastructure/casl';
+import {
+  CACHE_KEYS,
+  getCachedKeyById,
+} from 'src/infrastructure/cache/cache-keys';
 
 @Injectable()
 export class ProfileService {

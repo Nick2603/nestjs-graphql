@@ -15,6 +15,8 @@ import { User } from '../user/models/user.model';
 import { Public } from '../auth/decorators/public.decorator';
 import { CurrentUser } from '../auth/decorators/current-user.decorator';
 import type { UserWithRoles } from '../user/interfaces/user-with-roles.interface';
+import { CheckPolicies } from 'src/infrastructure/casl/decorators/check-policies.decorator';
+import { CreateArticlePolicyHandler } from 'src/infrastructure/casl';
 
 @Resolver(() => Article)
 export class ArticleResolver {
@@ -40,12 +42,12 @@ export class ArticleResolver {
   }
 
   @Mutation(() => Article)
+  @CheckPolicies(new CreateArticlePolicyHandler())
   async createArticle(
     @CurrentUser('id') id: string,
     @Args('data') data: CreateArticleInput,
-    @CurrentUser() user: UserWithRoles,
   ) {
-    return await this.articleService.createArticle(id, data, user);
+    return await this.articleService.createArticle(id, data);
   }
 
   @Mutation(() => Article)

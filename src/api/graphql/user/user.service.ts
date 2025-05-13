@@ -7,7 +7,10 @@ import type { CreateUserInput } from './dto/create-user.input';
 import { hashPassword } from 'src/common/utils/hash';
 import type { UserWithRoles } from './interfaces/user-with-roles.interface';
 import { AppCacheService } from 'src/infrastructure/cache/app-cache.service';
-import { CACHE_KEYS, getCachedKeyById } from 'src/infrastructure/casl';
+import {
+  CACHE_KEYS,
+  getCachedKeyById,
+} from 'src/infrastructure/cache/cache-keys';
 
 @Injectable()
 export class UserService {

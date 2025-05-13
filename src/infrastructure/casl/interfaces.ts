@@ -1,3 +1,4 @@
+import type { AbilityTuple, MongoAbility, MongoQuery } from '@casl/ability';
 import type { Article, User, UserRole } from 'prisma/generated/prisma';
 
 type UserRoleForCasl = Pick<UserRole, 'title'> &
@@ -19,3 +20,13 @@ export enum CaslSubject {
   ALL = 'all',
   ARTICLE = 'Article',
 }
+
+export type AppAbility = MongoAbility<AbilityTuple<Action>, MongoQuery>;
+
+export interface IPolicyHandler {
+  handle(ability: AppAbility): boolean;
+}
+
+type PolicyHandlerCallback = (ability: AppAbility) => boolean;
+
+export type PolicyHandler = IPolicyHandler | PolicyHandlerCallback;

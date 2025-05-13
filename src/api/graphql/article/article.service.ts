@@ -5,13 +5,12 @@ import type { CreateArticleInput } from './dto/create-article.input';
 import type { Article } from 'prisma/generated/prisma';
 import type { UpdateArticleInput } from './dto/update-article.input';
 import type { UserWithRoles } from '../user/interfaces/user-with-roles.interface';
-import {
-  canCreateArticle,
-  canDeleteArticle,
-  canUpdateArticle,
-} from 'src/infrastructure/casl';
+import { canUpdateArticle, canDeleteArticle } from 'src/infrastructure/casl';
 import { AppCacheService } from 'src/infrastructure/cache/app-cache.service';
-import { CACHE_KEYS, getCachedKeyById } from 'src/infrastructure/casl';
+import {
+  CACHE_KEYS,
+  getCachedKeyById,
+} from 'src/infrastructure/cache/cache-keys';
 import { AppEventemitterService } from 'src/infrastructure/eventemitter/app-eventemitter.service';
 import {
   ArticleCreated,
@@ -87,10 +86,7 @@ export class ArticleService {
   async createArticle(
     userId: string,
     data: CreateArticleInput,
-    user: UserWithRoles,
   ): Promise<Article> {
-    canCreateArticle(user);
-
     const article = await this.articleRepository.createArticle(userId, data);
 
     await this.appEventemitterService.emitEvent(
