@@ -1,5 +1,5 @@
 import { subject } from '@casl/ability';
-import { defineCaslAbility } from '../define-casl-ability';
+import type { CaslService } from '../casl.service';
 import {
   Action,
   CaslSubject,
@@ -11,8 +11,9 @@ import { UnauthorizedException } from '@nestjs/common';
 export const canDeleteArticle = (
   user: UserForCasl,
   article: ArticleForCasl,
+  caslService: CaslService,
 ): void => {
-  const ability = defineCaslAbility(user);
+  const ability = caslService.defineCaslAbility(user);
 
   if (!ability.can(Action.DELETE, subject(CaslSubject.ARTICLE, article)))
     throw new UnauthorizedException(

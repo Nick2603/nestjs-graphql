@@ -8,6 +8,7 @@ import { DataLoaderModule } from 'src/infrastructure/data-loader/data-loader.mod
 import { AppCacheModule } from 'src/infrastructure/cache/app-cache.module';
 import { AppEventemitterModule } from 'src/infrastructure/eventemitter/app-eventemitter.module';
 import { AppElasticsearchModule } from 'src/infrastructure/elasticsearch/app-elasticsearch.module';
+import { CaslModule } from 'src/infrastructure/casl/casl.module';
 
 @Module({
   imports: [
@@ -16,6 +17,7 @@ import { AppElasticsearchModule } from 'src/infrastructure/elasticsearch/app-ela
     AppCacheModule,
     AppEventemitterModule,
     AppElasticsearchModule,
+    CaslModule,
   ],
   providers: [
     ArticleResolver,

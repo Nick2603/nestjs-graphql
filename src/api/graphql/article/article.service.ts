@@ -20,6 +20,7 @@ import {
 } from 'src/infrastructure/eventemitter/events';
 import { AppElasticsearchService } from 'src/infrastructure/elasticsearch/app-elasticsearch.service';
 import { ELASTICSEARCH_INDEXES } from 'src/infrastructure/elasticsearch/elasticsearch.indexes';
+import { CaslService } from 'src/infrastructure/casl/casl.service';
 
 @Injectable()
 export class ArticleService {
@@ -31,6 +32,7 @@ export class ArticleService {
     private readonly appCacheService: AppCacheService,
     private readonly appEventemitterService: AppEventemitterService,
     private readonly appElasticsearchService: AppElasticsearchService,
+    private readonly caslService: CaslService,
   ) {}
 
   async getArticlesCached(): Promise<Article[]> {
@@ -106,7 +108,7 @@ export class ArticleService {
 
     const article = await this.getArticle(id);
 
-    canUpdateArticle(user, article);
+    canUpdateArticle(user, article, this.caslService);
 
     const updatedArticle = await this.articleRepository.updateArticle(
       article.id,
@@ -124,7 +126,7 @@ export class ArticleService {
   async deleteArticle(id: string, user: UserWithRoles): Promise<Article> {
     const article = await this.getArticle(id);
 
-    canDeleteArticle(user, article);
+    canDeleteArticle(user, article, this.caslService);
 
     const deletedArticle =
       await this.articleRepository.deleteArticleWithCleanup(id);

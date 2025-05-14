@@ -7,6 +7,7 @@ import * as cookieParser from 'cookie-parser';
 import { JwtGuard } from './api/graphql/auth/guards/jwt.guard';
 import { RolesGuard } from './api/graphql/auth/guards/roles.guard';
 import { PoliciesGuard } from './infrastructure/casl/guards/policies.guard';
+import { CaslService } from './infrastructure/casl/casl.service';
 
 async function bootstrap() {
   const app = await NestFactory.create<NestExpressApplication>(AppModule);
@@ -22,10 +23,12 @@ async function bootstrap() {
 
   const reflector = app.get(Reflector);
 
+  const caslService = app.get(CaslService);
+
   app.useGlobalGuards(
     new JwtGuard(reflector),
     new RolesGuard(reflector),
-    new PoliciesGuard(reflector),
+    new PoliciesGuard(reflector, caslService),
   );
 
   app.useGlobalPipes(new ValidationPipe({ transform: true }));
