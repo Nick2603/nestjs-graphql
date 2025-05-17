@@ -31,7 +31,7 @@ export class UserRoleResolver {
   @Public()
   @Query(() => UserRole)
   async getUserRole(@Args('id') id: string) {
-    return this.userRoleService.getUserRoleCached(id);
+    return this.userRoleService.getUserRole(id);
   }
 
   @Roles(RoleEnum.ADMIN)

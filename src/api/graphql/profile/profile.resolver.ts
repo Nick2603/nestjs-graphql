@@ -31,7 +31,7 @@ export class ProfileResolver {
   @Public()
   @Query(() => Profile)
   async getProfile(@Args('userId') userId: string) {
-    return this.profileService.getProfileCached(userId);
+    return this.profileService.getProfile(userId);
   }
 
   @Mutation(() => Profile)

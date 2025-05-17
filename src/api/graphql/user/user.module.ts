@@ -5,10 +5,9 @@ import { UserRepository } from './user.repository';
 import { UserQueryRepository } from './user.query-repository';
 import { PrismaModule } from 'src/infrastructure/prisma/prisma.module';
 import { DataLoaderModule } from 'src/infrastructure/data-loader/data-loader.module';
-import { AppCacheModule } from 'src/infrastructure/cache/app-cache.module';
 
 @Module({
-  imports: [PrismaModule, DataLoaderModule, AppCacheModule],
+  imports: [PrismaModule, DataLoaderModule],
   providers: [UserResolver, UserService, UserRepository, UserQueryRepository],
   exports: [UserQueryRepository, UserService],
 })

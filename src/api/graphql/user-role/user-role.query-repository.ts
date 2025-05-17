@@ -6,8 +6,8 @@ import { PrismaService } from 'src/infrastructure/prisma/prisma.service';
 export class UserRoleQueryRepository {
   constructor(private readonly prisma: PrismaService) {}
 
-  async getUserRoles(): Promise<DBUserRole[]> {
-    return await this.prisma.userRole.findMany();
+  async getUserRolesWithCache(): Promise<DBUserRole[]> {
+    return await this.prisma.withExtensions().userRole.findManyWithCache();
   }
 
   /**

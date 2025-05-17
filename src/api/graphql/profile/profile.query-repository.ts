@@ -6,8 +6,8 @@ import { PrismaService } from 'src/infrastructure/prisma/prisma.service';
 export class ProfileQueryRepository {
   constructor(private readonly prisma: PrismaService) {}
 
-  async getProfiles(): Promise<Profile[]> {
-    return await this.prisma.profile.findMany();
+  async getProfilesWithCache(): Promise<Profile[]> {
+    return await this.prisma.withExtensions().profile.findManyWithCache();
   }
 
   /**

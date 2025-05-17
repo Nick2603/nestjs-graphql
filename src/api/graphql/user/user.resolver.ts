@@ -40,7 +40,7 @@ export class UserResolver {
   @Public()
   @Query(() => User)
   async getUser(@Args('id') id: string) {
-    return this.userService.getUserCached(id);
+    return this.userService.getUser(id);
   }
 
   @Query(() => User)

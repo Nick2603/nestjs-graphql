@@ -7,8 +7,8 @@ import type { UserWithRoles } from './interfaces/user-with-roles.interface';
 export class UserQueryRepository {
   constructor(private readonly prisma: PrismaService) {}
 
-  async getUsers(): Promise<User[]> {
-    return await this.prisma.user.findMany();
+  async getUsersWithCache(): Promise<User[]> {
+    return await this.prisma.withExtensions().user.findManyWithCache();
   }
 
   /**

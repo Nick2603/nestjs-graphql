@@ -6,10 +6,9 @@ import { ProfileRepository } from './profile.repository';
 import { PrismaModule } from 'src/infrastructure/prisma/prisma.module';
 import { UserModule } from '../user/user.module';
 import { DataLoaderModule } from 'src/infrastructure/data-loader/data-loader.module';
-import { AppCacheModule } from 'src/infrastructure/cache/app-cache.module';
 
 @Module({
-  imports: [PrismaModule, UserModule, DataLoaderModule, AppCacheModule],
+  imports: [PrismaModule, UserModule, DataLoaderModule],
   providers: [
     ProfileResolver,
     ProfileService,

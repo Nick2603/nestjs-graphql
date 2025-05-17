@@ -6,11 +6,6 @@ import type { Article } from 'prisma/generated/prisma';
 import type { UpdateArticleInput } from './dto/update-article.input';
 import type { UserWithRoles } from '../user/interfaces/user-with-roles.interface';
 import { canUpdateArticle, canDeleteArticle } from 'src/infrastructure/casl';
-import { AppCacheService } from 'src/infrastructure/cache/app-cache.service';
-import {
-  CACHE_KEYS,
-  getCachedKeyById,
-} from 'src/infrastructure/cache/cache-keys';
 import { AppEventemitterService } from 'src/infrastructure/eventemitter/app-eventemitter.service';
 import {
   ArticleCreated,
@@ -24,33 +19,16 @@ import { CaslService } from 'src/infrastructure/casl/casl.service';
 
 @Injectable()
 export class ArticleService {
-  private readonly cacheTtl: number = 60_000;
-
   constructor(
     private readonly articleRepository: ArticleRepository,
     private readonly articleQueryRepository: ArticleQueryRepository,
-    private readonly appCacheService: AppCacheService,
     private readonly appEventemitterService: AppEventemitterService,
     private readonly appElasticsearchService: AppElasticsearchService,
     private readonly caslService: CaslService,
   ) {}
 
   async getArticlesCached(): Promise<Article[]> {
-    const cachedArticles = await this.appCacheService.get<Article[]>(
-      CACHE_KEYS.ARTICLES,
-    );
-
-    if (cachedArticles) return cachedArticles;
-
-    const articles = await this.articleQueryRepository.getArticles();
-
-    await this.appCacheService.set(
-      CACHE_KEYS.ARTICLES,
-      articles,
-      this.cacheTtl,
-    );
-
-    return articles;
+    return await this.articleQueryRepository.getArticlesWithCache();
   }
 
   async getArticlesByTextContent(textContent: string): Promise<Article[]> {
@@ -63,26 +41,12 @@ export class ArticleService {
     const ids = articles.map((article) => article._id);
 
     return ids.length
-      ? await this.articleQueryRepository.getArticles({ ids })
+      ? await this.articleQueryRepository.getArticlesWithCache({ ids })
       : [];
   }
 
   async getArticle(id: string): Promise<Article> {
     return await this.articleQueryRepository.getArticle(id);
-  }
-
-  async getArticleCached(id: string): Promise<Article> {
-    const cacheKeyById = getCachedKeyById(id, CACHE_KEYS.ARTICLES);
-
-    const cachedArticle = await this.appCacheService.get<Article>(cacheKeyById);
-
-    if (cachedArticle) return cachedArticle;
-
-    const article = await this.articleQueryRepository.getArticle(id);
-
-    await this.appCacheService.set(cacheKeyById, article, this.cacheTtl);
-
-    return article;
   }
 
   async createArticle(

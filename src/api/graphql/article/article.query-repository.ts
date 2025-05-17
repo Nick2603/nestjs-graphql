@@ -10,11 +10,11 @@ interface articleSearchParams {
 export class ArticleQueryRepository {
   constructor(private readonly prisma: PrismaService) {}
 
-  async getArticles(params?: articleSearchParams): Promise<Article[]> {
+  async getArticlesWithCache(params?: articleSearchParams): Promise<Article[]> {
     const where = { ...(params?.ids?.length && { id: { in: params.ids } }) };
 
-    return await this.prisma.article.findMany({
-      where,
+    return await this.prisma.withExtensions().article.findManyWithCache({
+      ...where,
     });
   }
 

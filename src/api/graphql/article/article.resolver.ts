@@ -38,7 +38,7 @@ export class ArticleResolver {
   @Public()
   @Query(() => Article)
   async getArticle(@Args('id') id: string) {
-    return this.articleService.getArticleCached(id);
+    return this.articleService.getArticle(id);
   }
 
   @Mutation(() => Article)

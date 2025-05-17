@@ -1,26 +1,16 @@
 import { Injectable, OnModuleDestroy, OnModuleInit } from '@nestjs/common';
 import { PrismaClient } from '../../../prisma/generated/prisma';
-// import { neonConfig } from '@neondatabase/serverless';
-// import { PrismaNeon } from '@prisma/adapter-neon';
-// import { AppConfigService } from '../app-config/app-config.service';
-// import ws from 'ws';
+import { AppCacheService } from '../cache/app-cache.service';
+import { getCacheExtension } from './extensions';
 
 @Injectable()
 export class PrismaService
   extends PrismaClient
   implements OnModuleInit, OnModuleDestroy
 {
-  // constructor(private readonly appConfigService: AppConfigService) {
-  //   neonConfig.webSocketConstructor = ws;
-
-  //   const adapter = new PrismaNeon({
-  //     connectionString: appConfigService.databaseUrl,
-  //   });
-
-  //   super({
-  //     adapter,
-  //   });
-  // }
+  constructor(private readonly appCacheService: AppCacheService) {
+    super();
+  }
 
   async onModuleInit() {
     await this.$connect();
@@ -28,5 +18,11 @@ export class PrismaService
 
   async onModuleDestroy() {
     await this.$disconnect();
+  }
+
+  withExtensions() {
+    return this.$extends({
+      ...getCacheExtension(this.appCacheService),
+    });
   }
 }
