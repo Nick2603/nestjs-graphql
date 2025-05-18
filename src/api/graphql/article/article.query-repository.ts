@@ -13,7 +13,7 @@ export class ArticleQueryRepository {
   async getArticlesWithCache(params?: articleSearchParams): Promise<Article[]> {
     const where = { ...(params?.ids?.length && { id: { in: params.ids } }) };
 
-    return await this.prisma.withExtensions().article.findManyWithCache({
+    return await this.prisma.withCacheExtension().article.findManyWithCache({
       ...where,
     });
   }

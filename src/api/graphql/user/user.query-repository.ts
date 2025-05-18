@@ -8,7 +8,7 @@ export class UserQueryRepository {
   constructor(private readonly prisma: PrismaService) {}
 
   async getUsersWithCache(): Promise<User[]> {
-    return await this.prisma.withExtensions().user.findManyWithCache();
+    return await this.prisma.withCacheExtension().user.findManyWithCache();
   }
 
   /**

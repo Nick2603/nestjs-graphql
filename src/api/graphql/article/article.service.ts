@@ -27,11 +27,10 @@ export class ArticleService {
     private readonly caslService: CaslService,
   ) {}
 
-  async getArticlesCached(): Promise<Article[]> {
-    return await this.articleQueryRepository.getArticlesWithCache();
-  }
+  async getArticlesCached(textContent?: string): Promise<Article[]> {
+    if (!textContent)
+      return await this.articleQueryRepository.getArticlesWithCache();
 
-  async getArticlesByTextContent(textContent: string): Promise<Article[]> {
     const articles = await this.appElasticsearchService.getDocuments<
       Pick<Article, 'genres' | 'text'>
     >(ELASTICSEARCH_INDEXES.ARTICLE, {

@@ -30,9 +30,7 @@ export class ArticleResolver {
   async getArticles(
     @Args('textContent', { nullable: true }) textContent?: string,
   ) {
-    return textContent
-      ? this.articleService.getArticlesByTextContent(textContent)
-      : this.articleService.getArticlesCached();
+    return this.articleService.getArticlesCached(textContent);
   }
 
   @Public()

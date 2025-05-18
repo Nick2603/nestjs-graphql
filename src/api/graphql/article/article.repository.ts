@@ -18,8 +18,8 @@ export class ArticleRepository {
 
     if (!user) throw new NotFoundException('User not found');
 
-    return await this.prisma.$transaction(async (tx) => {
-      const article = await tx.article.create({
+    return await this.prisma.withESExtension().$transaction(async (tx) => {
+      const article = await tx.article.createWithESSync({
         data: {
           ...data,
           authorId: user.id,
@@ -42,7 +42,7 @@ export class ArticleRepository {
   }
 
   async updateArticle(id: string, data: UpdateArticleInput): Promise<Article> {
-    return await this.prisma.article.update({
+    return await this.prisma.withESExtension().article.updateWithESSync({
       where: {
         id,
       },
@@ -51,7 +51,7 @@ export class ArticleRepository {
   }
 
   async deleteArticle(id: string): Promise<Article> {
-    return await this.prisma.article.delete({
+    return await this.prisma.withESExtension().article.deleteWithESSync({
       where: {
         id,
       },
@@ -59,7 +59,7 @@ export class ArticleRepository {
   }
 
   async deleteArticleWithCleanup(id: string): Promise<Article> {
-    return await this.prisma.$transaction(
+    return await this.prisma.withESExtension().$transaction(
       async (tx) => {
         const article = await tx.article.findUnique({
           where: { id },
@@ -81,7 +81,7 @@ export class ArticleRepository {
           },
         });
 
-        return await tx.article.delete({
+        return await tx.article.deleteWithESSync({
           where: { id: article.id },
         });
       },

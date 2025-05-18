@@ -7,7 +7,7 @@ export class UserRoleQueryRepository {
   constructor(private readonly prisma: PrismaService) {}
 
   async getUserRolesWithCache(): Promise<DBUserRole[]> {
-    return await this.prisma.withExtensions().userRole.findManyWithCache();
+    return await this.prisma.withCacheExtension().userRole.findManyWithCache();
   }
 
   /**

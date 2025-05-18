@@ -7,7 +7,7 @@ export class ProfileQueryRepository {
   constructor(private readonly prisma: PrismaService) {}
 
   async getProfilesWithCache(): Promise<Profile[]> {
-    return await this.prisma.withExtensions().profile.findManyWithCache();
+    return await this.prisma.withCacheExtension().profile.findManyWithCache();
   }
 
   /**
